@@ -1,6 +1,6 @@
 
 <div align="center">
-  <img alt="vue3-element-admin" width="80" height="80" src="./src/assets/images/logo.png">
+  <img alt="vue3-element-admin" width="80" height="80" src="./doc/images/logo.png">
   <h1>matrix-mall-admin-spring-boot</h1>
 
   <img src="https://img.shields.io/badge/Java-17-brightgreen.svg"/>
