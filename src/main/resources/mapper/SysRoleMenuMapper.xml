@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bzq.matrixmall.mapper.SysRoleMenuMapper">
+    <!-- 获取角色拥有的权限列表 -->
+    <select id="listRolePerms" resultType="java.lang.String">
+        SELECT
+        DISTINCT t2.perm
+        FROM
+        sys_role_menu t1
+        INNER JOIN sys_menu t2 ON t2.id = t1.menu_id
+        INNER JOIN sys_role t3 ON t3.id = t1.role_id
+        WHERE
+        t2.type = '${@com.bzq.matrixmall.enums.MenuTypeEnum@BUTTON.getValue()}'
+        AND t2.perm IS NOT NULL
+        AND t3.CODE IN
+        <foreach collection="roles" item="role" separator="," open="(" close=")">
+            #{role}
+        </foreach>
+    </select>
+</mapper>
