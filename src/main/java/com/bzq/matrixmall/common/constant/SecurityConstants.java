@@ -7,4 +7,5 @@ public interface SecurityConstants
     String LOGIN_PATH = "/api/v1/auth/login";//登录路径
     String JWT_TOKEN_PREFIX = "Bearer ";//JWT Token 前缀
     String BLACKLIST_TOKEN_PREFIX = "token:blacklist:";//黑名单Token缓存前缀
+    String ROLE_PERMS_PREFIX = "role_perms:";//角色和权限缓存前缀
 }
