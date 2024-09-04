@@ -2,6 +2,7 @@ package com.bzq.matrixmall.security.util;
 
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.StrUtil;
+import com.bzq.matrixmall.common.constant.SystemConstants;
 import com.bzq.matrixmall.security.model.SysUserDetails;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -44,5 +45,11 @@ public class SecurityUtils {
             }
         }
         return Collections.EMPTY_SET;
+    }
+
+    //是否超级管理员
+    public static boolean isRoot() {
+        Set<String> roles = getRoles();
+        return roles.contains(SystemConstants.ROOT_ROLE_CODE);
     }
 }
