@@ -10,5 +10,5 @@ import java.lang.annotation.*;
 public @interface PreventRepeatSubmit {
 
     //锁过期时间（秒），默认5秒内不允许重复提交
-    int expire() default 5;
+    int expire() default 6;
 }

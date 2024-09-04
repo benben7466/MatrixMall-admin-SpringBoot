@@ -15,9 +15,9 @@ import java.util.stream.Collectors;
 public class SysUserRoleServiceImpl extends ServiceImpl<SysUserRoleMapper, SysUserRole> implements SysUserRoleService {
     //保存用户角色
     @Override
-    public boolean saveUserRoles(Long userId, List<Long> roleIds) {
+    public void saveUserRoles(Long userId, List<Long> roleIds) {
         if (userId == null || CollectionUtil.isEmpty(roleIds)) {
-            return false;
+            return;
         }
 
         // 用户原角色ID集合
@@ -56,6 +56,6 @@ public class SysUserRoleServiceImpl extends ServiceImpl<SysUserRoleMapper, SysUs
                 );
             }
         }
-        return true;
+
     }
 }
