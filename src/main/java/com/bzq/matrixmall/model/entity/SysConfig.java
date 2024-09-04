@@ -4,11 +4,13 @@ import com.baomidou.mybatisplus.annotation.*;
 import com.bzq.matrixmall.common.base.BaseEntity;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 //系统配置，对应数据库字段
 @Schema(description = "系统配置")
 @TableName("sys_config")
 @Data
+@EqualsAndHashCode(callSuper = false)
 public class SysConfig extends BaseEntity {
 
     @Schema(description = "配置名称")

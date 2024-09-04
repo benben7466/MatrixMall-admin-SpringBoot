@@ -2,12 +2,17 @@ package com.bzq.matrixmall.service.impl;
 
 import cn.hutool.core.collection.CollectionUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.bzq.matrixmall.converter.UserConverter;
+import com.bzq.matrixmall.model.bo.UserBO;
 import com.bzq.matrixmall.model.dto.UserAuthInfo;
 import com.bzq.matrixmall.model.entity.SysUser;
 import com.bzq.matrixmall.mapper.SysUserMapper;
+import com.bzq.matrixmall.model.query.UserPageQuery;
 import com.bzq.matrixmall.model.vo.UserInfoVO;
+import com.bzq.matrixmall.model.vo.UserPageVO;
 import com.bzq.matrixmall.security.service.PermissionService;
 import com.bzq.matrixmall.security.util.SecurityUtils;
 import com.bzq.matrixmall.service.SysRoleMenuService;
@@ -74,5 +79,20 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         }
 
         return userInfoVO;
+    }
+
+    //获取用户分页列表
+    @Override
+    public IPage<UserPageVO> listPagedUsers(UserPageQuery queryParams) {
+        // 参数构建
+        int pageNum = queryParams.getPageNum();
+        int pageSize = queryParams.getPageSize();
+        Page<UserBO> page = new Page<>(pageNum, pageSize);
+
+        // 查询数据
+        Page<UserBO> userPage = this.baseMapper.listPagedUsers(page, queryParams);
+
+        // 实体转换
+        return userConverter.toPageVo(userPage);
     }
 }

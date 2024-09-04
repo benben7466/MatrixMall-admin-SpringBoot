@@ -1,9 +1,12 @@
 package com.bzq.matrixmall.service;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.bzq.matrixmall.model.dto.UserAuthInfo;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.bzq.matrixmall.model.entity.SysUser;
+import com.bzq.matrixmall.model.query.UserPageQuery;
 import com.bzq.matrixmall.model.vo.UserInfoVO;
+import com.bzq.matrixmall.model.vo.UserPageVO;
 
 //用户业务接口
 public interface SysUserService extends IService<SysUser> {
@@ -12,4 +15,7 @@ public interface SysUserService extends IService<SysUser> {
 
     //获取登录用户信息
     UserInfoVO getCurrentUserInfo();
+
+    //用户分页列表
+    IPage<UserPageVO> listPagedUsers(UserPageQuery queryParams);
 }
