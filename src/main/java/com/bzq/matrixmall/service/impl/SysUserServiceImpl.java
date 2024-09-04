@@ -1,15 +1,18 @@
 package com.bzq.matrixmall.service.impl;
 
 import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.lang.Assert;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.bzq.matrixmall.common.constant.SystemConstants;
 import com.bzq.matrixmall.converter.UserConverter;
 import com.bzq.matrixmall.model.bo.UserBO;
 import com.bzq.matrixmall.model.dto.UserAuthInfo;
 import com.bzq.matrixmall.model.entity.SysUser;
 import com.bzq.matrixmall.mapper.SysUserMapper;
+import com.bzq.matrixmall.model.form.UserForm;
 import com.bzq.matrixmall.model.query.UserPageQuery;
 import com.bzq.matrixmall.model.vo.UserInfoVO;
 import com.bzq.matrixmall.model.vo.UserPageVO;
@@ -17,8 +20,10 @@ import com.bzq.matrixmall.security.service.PermissionService;
 import com.bzq.matrixmall.security.util.SecurityUtils;
 import com.bzq.matrixmall.service.SysRoleMenuService;
 import com.bzq.matrixmall.service.SysRoleService;
+import com.bzq.matrixmall.service.SysUserRoleService;
 import com.bzq.matrixmall.service.SysUserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Set;
@@ -30,6 +35,34 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     private final SysRoleService roleService;
     private final UserConverter userConverter;
     private final PermissionService permissionService;
+    private final PasswordEncoder passwordEncoder;
+    private final SysUserRoleService userRoleService;
+
+    //新增用户
+    @Override
+    public boolean saveUser(UserForm userForm) {
+        String username = userForm.getUsername();
+
+        long count = this.count(new LambdaQueryWrapper<SysUser>().eq(SysUser::getUsername, username));
+        Assert.isTrue(count == 0, "用户名已存在");
+
+        // 实体转换 form->entity
+        SysUser entity = userConverter.toEntity(userForm);
+
+        // 设置默认加密密码
+        String defaultEncryptPwd = passwordEncoder.encode(SystemConstants.DEFAULT_PASSWORD);
+        entity.setPassword(defaultEncryptPwd);
+
+        // 新增用户
+        boolean result = this.save(entity);
+
+        if (result) {
+            // 保存用户角色
+            userRoleService.saveUserRoles(entity.getId(), userForm.getRoleIds());
+        }
+
+        return result;
+    }
 
     //根据用户名获取认证信息
     @Override

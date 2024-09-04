@@ -6,8 +6,10 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.bzq.matrixmall.model.bo.UserBO;
 import com.bzq.matrixmall.model.entity.SysUser;
+import com.bzq.matrixmall.model.form.UserForm;
 import com.bzq.matrixmall.model.vo.UserInfoVO;
 import com.bzq.matrixmall.model.vo.UserPageVO;
+import org.mapstruct.InheritInverseConfiguration;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
@@ -21,4 +23,9 @@ public interface UserConverter {
     UserInfoVO toUserInfoVo(SysUser entity);
 
     Page<UserPageVO> toPageVo(Page<UserBO> bo);
+
+    UserForm toForm(SysUser entity);
+
+    @InheritInverseConfiguration(name = "toForm")
+    SysUser toEntity(UserForm entity);
 }

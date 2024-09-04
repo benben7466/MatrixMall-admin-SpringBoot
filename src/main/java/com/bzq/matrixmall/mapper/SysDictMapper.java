@@ -9,5 +9,5 @@ import org.apache.ibatis.annotations.Mapper;
 //字典 访问层
 @Mapper
 public interface SysDictMapper extends BaseMapper<SysDict> {
-    
+
 }
