@@ -2,7 +2,9 @@ package com.bzq.matrixmall.service.impl;
 
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.lang.Assert;
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -25,8 +27,12 @@ import com.bzq.matrixmall.service.SysUserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -127,5 +133,59 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
 
         // 实体转换
         return userConverter.toPageVo(userPage);
+    }
+
+    //删除用户
+    @Override
+    public boolean deleteUsers(String idsStr) {
+
+        Assert.isTrue(StrUtil.isNotBlank(idsStr), "删除的用户数据为空");
+
+        // 逻辑删除
+        List<Long> ids = Arrays.stream(idsStr.split(","))
+                .map(Long::parseLong)
+                .collect(Collectors.toList());
+        return this.removeByIds(ids);
+    }
+
+    //重置密码
+    @Override
+    public boolean resetPassword(Long userId, String password) {
+        return this.update(new LambdaUpdateWrapper<SysUser>()
+                .eq(SysUser::getId, userId)
+                .set(SysUser::getPassword, passwordEncoder.encode(password))
+        );
+    }
+
+    //获取用户表单数据
+    @Override
+    public UserForm getUserFormData(Long userId) {
+        return this.baseMapper.getUserFormData(userId);
+    }
+
+    //更新用户
+    @Override
+    @Transactional
+    public boolean updateUser(Long userId, UserForm userForm) {
+        String username = userForm.getUsername();
+
+        long count = this.count(new LambdaQueryWrapper<SysUser>()
+                .eq(SysUser::getUsername, username)
+                .ne(SysUser::getId, userId)
+        );
+        Assert.isTrue(count == 0, "用户名已存在");
+
+        // form -> entity
+        SysUser entity = userConverter.toEntity(userForm);
+
+        // 修改用户
+        boolean result = this.updateById(entity);
+
+        if (result) {
+            // 保存用户角色
+            userRoleService.saveUserRoles(entity.getId(), userForm.getRoleIds());
+        }
+
+        return result;
     }
 }

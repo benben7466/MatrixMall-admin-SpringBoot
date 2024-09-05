@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.bzq.matrixmall.model.bo.UserBO;
 import com.bzq.matrixmall.model.dto.UserAuthInfo;
 import com.bzq.matrixmall.model.entity.SysUser;
+import com.bzq.matrixmall.model.form.UserForm;
 import com.bzq.matrixmall.model.query.UserPageQuery;
 import com.bzq.matrixmall.plugin.syslog.annotation.DataPermission;
 import org.apache.ibatis.annotations.Mapper;
@@ -18,4 +19,7 @@ public interface SysUserMapper extends BaseMapper<SysUser> {
     //获取用户分页列表
     @DataPermission(deptAlias = "u")
     Page<UserBO> listPagedUsers(Page<UserBO> page, UserPageQuery queryParams);
+
+    //获取用户表单详情
+    UserForm getUserFormData(Long userId);
 }

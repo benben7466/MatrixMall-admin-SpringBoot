@@ -12,10 +12,12 @@ import com.bzq.matrixmall.plugin.norepeat.annotation.PreventRepeatSubmit;
 import com.bzq.matrixmall.plugin.syslog.annotation.LogAnnotation;
 import com.bzq.matrixmall.service.SysUserService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 //用户控制层
@@ -38,6 +40,35 @@ public class SysUserController {
         return Result.judge(result);
     }
 
+    @Operation(summary = "用户表单数据")
+    @GetMapping("/{userId}/form")
+    public Result<UserForm> getUserForm(
+            @Parameter(description = "用户ID") @PathVariable Long userId
+    ) {
+        UserForm formData = userService.getUserFormData(userId);
+        return Result.success(formData);
+    }
+
+    @Operation(summary = "修改用户")
+    @PutMapping(value = "/{userId}")
+    @PreAuthorize("@ss.hasPerm('sys:user:edit')")
+    public Result<?> updateUser(
+            @Parameter(description = "用户ID") @PathVariable Long userId,
+            @RequestBody @Validated UserForm userForm) {
+        boolean result = userService.updateUser(userId, userForm);
+        return Result.judge(result);
+    }
+
+    @Operation(summary = "删除用户")
+    @DeleteMapping("/{ids}")
+    @PreAuthorize("@ss.hasPerm('sys:user:delete')")
+    public Result<?> deleteUsers(
+            @Parameter(description = "用户ID，多个以英文逗号(,)分割") @PathVariable String ids
+    ) {
+        boolean result = userService.deleteUsers(ids);
+        return Result.judge(result);
+    }
+
     @Operation(summary = "获取当前登录用户信息")
     @GetMapping("/me")
     public Result<UserInfoVO> getCurrentUserInfo() {
@@ -52,4 +83,16 @@ public class SysUserController {
         IPage<UserPageVO> result = userService.listPagedUsers(queryParams);
         return PageResult.success(result);
     }
+
+    @Operation(summary = "重置用户密码")
+    @PutMapping(value = "/{userId}/password/reset")
+    @PreAuthorize("@ss.hasPerm('sys:user:password:reset')")
+    public Result<?> resetPassword(
+            @Parameter(description = "用户ID") @PathVariable Long userId,
+            @RequestParam String password
+    ) {
+        boolean result = userService.resetPassword(userId, password);
+        return Result.judge(result);
+    }
+
 }

@@ -51,7 +51,7 @@ security:
     # JWT 秘钥
     key: SecretKey1122334455667788
     # JWT 有效期(单位：秒)
-    ttl: 7200
+    ttl: 72000
   # 白名单列表
   ignore-urls:
     - /api/v1/auth/captcha

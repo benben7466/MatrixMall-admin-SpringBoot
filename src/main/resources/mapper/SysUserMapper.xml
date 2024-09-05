@@ -81,4 +81,40 @@
         u.id
     </select>
 
+    <!-- 根据用户ID获取用户详情 -->
+    <select id="getUserFormData" resultMap="UserFormMap">
+        SELECT
+            id,
+            username,
+            nickname,
+            mobile,
+            gender,
+            avatar,
+            email,
+            status,
+            dept_id
+        FROM
+            sys_user
+        WHERE
+            id = #{userId} AND is_deleted = 0
+    </select>
+
+    <!-- 用户表单信息映射 -->
+    <resultMap id="UserFormMap" type="com.bzq.matrixmall.model.form.UserForm">
+        <id property="id" column="id" jdbcType="BIGINT"/>
+        <result property="username" column="username" jdbcType="VARCHAR"/>
+        <result property="nickname" column="nickname" jdbcType="VARCHAR"/>
+        <result property="mobile" column="mobile" jdbcType="VARCHAR"/>
+        <result property="gender" column="gender" jdbcType="TINYINT"/>
+        <result property="avatar" column="avatar" jdbcType="VARCHAR"/>
+        <result property="email" column="email" jdbcType="VARCHAR"/>
+        <result property="status" column="status" jdbcType="BOOLEAN"/>
+        <result property="deptId" column="dept_id" jdbcType="BIGINT"/>
+        <collection
+                property="roleIds"
+                column="id"
+                select="com.bzq.matrixmall.mapper.SysUserRoleMapper.listRoleIdsByUserId" >
+            <result column="role_id" />
+        </collection>
+    </resultMap>
 </mapper>
