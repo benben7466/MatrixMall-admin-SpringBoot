@@ -1,24 +1,38 @@
 package com.bzq.matrixmall.controller;
 
+import com.alibaba.excel.EasyExcel;
+import com.alibaba.excel.ExcelWriter;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.bzq.matrixmall.common.result.PageResult;
 import com.bzq.matrixmall.common.result.Result;
 import com.bzq.matrixmall.enums.LogModuleEnum;
+import com.bzq.matrixmall.model.dto.UserImportDTO;
 import com.bzq.matrixmall.model.form.UserForm;
 import com.bzq.matrixmall.model.query.UserPageQuery;
 import com.bzq.matrixmall.model.vo.UserInfoVO;
 import com.bzq.matrixmall.model.vo.UserPageVO;
+import com.bzq.matrixmall.plugin.easyexcel.UserImportListener;
 import com.bzq.matrixmall.plugin.norepeat.annotation.PreventRepeatSubmit;
 import com.bzq.matrixmall.plugin.syslog.annotation.LogAnnotation;
 import com.bzq.matrixmall.service.SysUserService;
+import com.bzq.matrixmall.util.ExcelUtils;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.ServletOutputStream;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 
 //用户控制层
 @Tag(name = "02.用户接口")
@@ -93,6 +107,30 @@ public class SysUserController {
     ) {
         boolean result = userService.resetPassword(userId, password);
         return Result.judge(result);
+    }
+
+    @Operation(summary = "用户导入模板下载")
+    @GetMapping("/template")
+    public void downloadTemplate(HttpServletResponse response) throws IOException {
+        String fileName = "用户导入模板.xlsx";
+        response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+        response.setHeader("Content-Disposition", "attachment; filename=" + URLEncoder.encode(fileName, StandardCharsets.UTF_8));
+
+        String fileClassPath = "templates" + File.separator + "excel" + File.separator + fileName;
+        InputStream inputStream = this.getClass().getClassLoader().getResourceAsStream(fileClassPath);
+
+        ServletOutputStream outputStream = response.getOutputStream();
+        ExcelWriter excelWriter = EasyExcel.write(outputStream).withTemplate(inputStream).build();
+
+        excelWriter.finish();
+    }
+
+    @Operation(summary = "导入用户")
+    @PostMapping("/import")
+    public Result<?> importUsers(MultipartFile file) throws IOException {
+        UserImportListener listener = new UserImportListener();
+        String msg = ExcelUtils.importExcel(file.getInputStream(), UserImportDTO.class, listener);
+        return Result.success(msg);
     }
 
 }

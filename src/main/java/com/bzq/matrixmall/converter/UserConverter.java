@@ -5,6 +5,7 @@ package com.bzq.matrixmall.converter;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.bzq.matrixmall.model.bo.UserBO;
+import com.bzq.matrixmall.model.dto.UserImportDTO;
 import com.bzq.matrixmall.model.entity.SysUser;
 import com.bzq.matrixmall.model.form.UserForm;
 import com.bzq.matrixmall.model.vo.UserInfoVO;
@@ -22,10 +23,18 @@ public interface UserConverter {
     })
     UserInfoVO toUserInfoVo(SysUser entity);
 
+    @Mappings({
+            @Mapping(target = "genderLabel", expression = "java(com.bzq.matrixmall.common.base.IBaseEnum.getLabelByValue(bo.getGender(), com.bzq.matrixmall.enums.GenderEnum.class))")
+    })
+    UserPageVO toPageVo(UserBO bo);
     Page<UserPageVO> toPageVo(Page<UserBO> bo);
 
     UserForm toForm(SysUser entity);
 
     @InheritInverseConfiguration(name = "toForm")
     SysUser toEntity(UserForm entity);
+
+    SysUser toEntity(UserImportDTO vo);
+
+
 }
