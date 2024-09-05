@@ -432,9 +432,9 @@ CREATE TABLE `sys_user`  (
 -- ----------------------------
 -- Records of sys_user
 -- ----------------------------
-INSERT INTO `sys_user` VALUES (1, 'root', '贲氏科技', 0, '$2a$10$xVWsNOhHrCxh5UbpCE7/HuJ.PAOKcYAqRxD2CO2nVnJS.IAXkr5aq', NULL, 'http://benzhiqiang.w1.luyouxia.net/img/bootstrap-logo.svg', '17621590365', 1, 'youlaitech@163.com', NULL, NULL, NULL, NULL, 0);
-INSERT INTO `sys_user` VALUES (2, 'admin', '系统管理员', 1, '$2a$10$xVWsNOhHrCxh5UbpCE7/HuJ.PAOKcYAqRxD2CO2nVnJS.IAXkr5aq', 1, 'http://benzhiqiang.w1.luyouxia.net/img/bootstrap-logo.svg', '17621210366', 1, '', '2019-10-10 13:41:22', NULL, '2022-07-31 12:39:30', NULL, 0);
-INSERT INTO `sys_user` VALUES (3, 'test', '测试用户', 1, '$2a$10$xVWsNOhHrCxh5UbpCE7/HuJ.PAOKcYAqRxD2CO2nVnJS.IAXkr5aq', 3, 'http://benzhiqiang.w1.luyouxia.net/img/bootstrap-logo.svg', '17621210366', 1, 'youlaitech@163.com', '2021-06-05 01:31:29', NULL, '2024-08-27 00:32:47', NULL, 0);
+INSERT INTO `sys_user` VALUES (1, 'root', '贲氏科技', 0, '$2a$10$xVWsNOhHrCxh5UbpCE7/HuJ.PAOKcYAqRxD2CO2nVnJS.IAXkr5aq', NULL, 'http://benzhiqiang.w1.luyouxia.net/img/bootstrap-logo.svg', '13426286424', 1, 'benben77466@qq.com', NULL, NULL, NULL, NULL, 0);
+INSERT INTO `sys_user` VALUES (2, 'admin', '系统管理员', 1, '$2a$10$xVWsNOhHrCxh5UbpCE7/HuJ.PAOKcYAqRxD2CO2nVnJS.IAXkr5aq', 1, 'http://benzhiqiang.w1.luyouxia.net/img/bootstrap-logo.svg', '13426286424', 1, '', '2018-10-10 00:00:00', NULL, '2023-12-31 12:39:30', NULL, 0);
+INSERT INTO `sys_user` VALUES (3, 'test', '测试用户', 1, '$2a$10$xVWsNOhHrCxh5UbpCE7/HuJ.PAOKcYAqRxD2CO2nVnJS.IAXkr5aq', 3, 'http://benzhiqiang.w1.luyouxia.net/img/bootstrap-logo.svg', '13426286424', 1, 'benben77466@qq.com', '2024-06-05 01:01:01', NULL, '2024-09-10 00:01:01', NULL, 0);
 
 -- ----------------------------
 -- Table structure for sys_user_role
