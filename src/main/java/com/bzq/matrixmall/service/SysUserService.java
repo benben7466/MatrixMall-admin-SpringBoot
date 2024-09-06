@@ -3,11 +3,14 @@ package com.bzq.matrixmall.service;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.bzq.matrixmall.model.dto.UserAuthInfo;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.bzq.matrixmall.model.dto.UserExportDTO;
 import com.bzq.matrixmall.model.entity.SysUser;
 import com.bzq.matrixmall.model.form.UserForm;
 import com.bzq.matrixmall.model.query.UserPageQuery;
 import com.bzq.matrixmall.model.vo.UserInfoVO;
 import com.bzq.matrixmall.model.vo.UserPageVO;
+
+import java.util.List;
 
 //用户业务接口
 public interface SysUserService extends IService<SysUser> {
@@ -36,4 +39,6 @@ public interface SysUserService extends IService<SysUser> {
     //重置用户密码
     boolean resetPassword(Long userId, String password);
 
+    //获取导出用户列表
+    List<UserExportDTO> listExportUsers(UserPageQuery queryParams);
 }

@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.bzq.matrixmall.common.result.PageResult;
 import com.bzq.matrixmall.common.result.Result;
 import com.bzq.matrixmall.enums.LogModuleEnum;
+import com.bzq.matrixmall.model.dto.UserExportDTO;
 import com.bzq.matrixmall.model.dto.UserImportDTO;
 import com.bzq.matrixmall.model.form.UserForm;
 import com.bzq.matrixmall.model.query.UserPageQuery;
@@ -33,6 +34,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 
 //用户控制层
 @Tag(name = "02.用户接口")
@@ -131,6 +133,18 @@ public class SysUserController {
         UserImportListener listener = new UserImportListener();
         String msg = ExcelUtils.importExcel(file.getInputStream(), UserImportDTO.class, listener);
         return Result.success(msg);
+    }
+
+    @Operation(summary = "导出用户")
+    @GetMapping("/export")
+    public void exportUsers(UserPageQuery queryParams, HttpServletResponse response) throws IOException {
+        String fileName = "用户列表.xlsx";
+        response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+        response.setHeader("Content-Disposition", "attachment; filename=" + URLEncoder.encode(fileName, StandardCharsets.UTF_8));
+
+        List<UserExportDTO> exportUserList = userService.listExportUsers(queryParams);
+        EasyExcel.write(response.getOutputStream(), UserExportDTO.class).sheet("用户列表")
+                .doWrite(exportUserList);
     }
 
 }

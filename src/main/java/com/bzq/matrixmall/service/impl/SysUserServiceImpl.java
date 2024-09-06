@@ -12,6 +12,7 @@ import com.bzq.matrixmall.common.constant.SystemConstants;
 import com.bzq.matrixmall.converter.UserConverter;
 import com.bzq.matrixmall.model.bo.UserBO;
 import com.bzq.matrixmall.model.dto.UserAuthInfo;
+import com.bzq.matrixmall.model.dto.UserExportDTO;
 import com.bzq.matrixmall.model.entity.SysUser;
 import com.bzq.matrixmall.mapper.SysUserMapper;
 import com.bzq.matrixmall.model.form.UserForm;
@@ -155,6 +156,12 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
                 .eq(SysUser::getId, userId)
                 .set(SysUser::getPassword, passwordEncoder.encode(password))
         );
+    }
+
+    //获取导出用户列表
+    @Override
+    public List<UserExportDTO> listExportUsers(UserPageQuery queryParams) {
+        return this.baseMapper.listExportUsers(queryParams);
     }
 
     //获取用户表单数据
