@@ -189,7 +189,7 @@ public class SysDictServiceImpl  extends ServiceImpl<SysDictMapper, SysDict> imp
                 }
             }
         }
-        
+
         return result;
     }
 }
