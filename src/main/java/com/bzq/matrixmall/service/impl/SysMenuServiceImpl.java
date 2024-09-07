@@ -1,31 +1,44 @@
 package com.bzq.matrixmall.service.impl;
 
 import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.lang.Assert;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.bzq.matrixmall.common.constant.SystemConstants;
+import com.bzq.matrixmall.common.model.KeyValue;
 import com.bzq.matrixmall.common.model.Option;
+import com.bzq.matrixmall.converter.MenuConverter;
 import com.bzq.matrixmall.enums.MenuTypeEnum;
 import com.bzq.matrixmall.enums.StatusEnum;
 import com.bzq.matrixmall.mapper.SysMenuMapper;
 import com.bzq.matrixmall.model.bo.RouteBO;
 import com.bzq.matrixmall.model.entity.SysMenu;
+import com.bzq.matrixmall.model.form.MenuForm;
+import com.bzq.matrixmall.model.query.MenuQuery;
+import com.bzq.matrixmall.model.vo.MenuVO;
 import com.bzq.matrixmall.model.vo.RouteVO;
 import com.bzq.matrixmall.service.SysMenuService;
+import com.bzq.matrixmall.service.SysRoleMenuService;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 //菜单业务实现类
 @Service
 @RequiredArgsConstructor
 public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> implements SysMenuService {
+
+    private final MenuConverter menuConverter;
+    private final SysRoleMenuService roleMenuService;
 
     //获取菜单路由列表
     @Override
@@ -47,6 +60,152 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
                 .orderByAsc(SysMenu::getSort)
         );
         return buildMenuOptions(SystemConstants.ROOT_NODE_ID, menuList);
+    }
+
+    //菜单列表
+    @Override
+    public List<MenuVO> listMenus(MenuQuery queryParams) {
+        List<SysMenu> menus = this.list(new LambdaQueryWrapper<SysMenu>()
+                .like(StrUtil.isNotBlank(queryParams.getKeywords()), SysMenu::getName, queryParams.getKeywords())
+                .orderByAsc(SysMenu::getSort)
+        );
+
+        // 获取所有菜单ID
+        Set<Long> menuIds = menus.stream()
+                .map(SysMenu::getId)
+                .collect(Collectors.toSet());
+
+        // 获取所有父级ID
+        Set<Long> parentIds = menus.stream()
+                .map(SysMenu::getParentId)
+                .collect(Collectors.toSet());
+
+        // 获取根节点ID（递归的起点），即父节点ID中不包含在菜单ID中的节点，注意这里不能拿顶级菜单 O 作为根节点，因为菜单筛选的时候 O 会被过滤掉
+        List<Long> rootIds = parentIds.stream()
+                .filter(id -> !menuIds.contains(id))
+                .toList();
+
+        // 使用递归函数来构建菜单树
+        return rootIds.stream()
+                .flatMap(rootId -> buildMenuTree(rootId, menus).stream())
+                .collect(Collectors.toList());
+    }
+
+    //新增/修改菜单
+    @Override
+    @CacheEvict(cacheNames = "menu", key = "'routes'")
+    public boolean saveMenu(MenuForm menuForm) {
+        MenuTypeEnum menuType = menuForm.getType();
+
+        if (menuType == MenuTypeEnum.CATALOG) {  // 如果是外链
+            String path = menuForm.getRoutePath();
+            if (menuForm.getParentId() == 0 && !path.startsWith("/")) {
+                menuForm.setRoutePath("/" + path); // 一级目录需以 / 开头
+            }
+            menuForm.setComponent("Layout");
+        } else if (menuType == MenuTypeEnum.EXTLINK) {   // 如果是目录
+            menuForm.setComponent(null);
+        }
+
+        SysMenu entity = menuConverter.toEntity(menuForm);
+        String treePath = generateMenuTreePath(menuForm.getParentId());
+        entity.setTreePath(treePath);
+
+        List<KeyValue> params = menuForm.getParams();
+        if (CollectionUtil.isNotEmpty(params)) {
+            entity.setParams(JSONUtil.toJsonStr(params.stream()
+                    .collect(Collectors.toMap(KeyValue::getKey, KeyValue::getValue))));// 路由参数 [{key:"id",value:"1"}，{key:"name",value:"张三"}] 转换为 [{"id":"1"},{"name":"张三"}]
+        } else {
+            entity.setParams(null);
+        }
+
+        if (menuType != MenuTypeEnum.BUTTON) {
+            Assert.isFalse(this.exists(new LambdaQueryWrapper<SysMenu>()
+                    .eq(SysMenu::getRouteName, entity.getRouteName())
+                    .ne(menuForm.getId() != null, SysMenu::getId, menuForm.getId())
+            ), "路由名称已存在");
+        }
+
+        boolean result = this.saveOrUpdate(entity);
+        if (result) {
+            // 编辑刷新角色权限缓存
+            if (menuForm.getId() != null) {
+                roleMenuService.refreshRolePermsCache();
+            }
+        }
+        return result;
+
+    }
+
+    //删除菜单
+    @Override
+    @CacheEvict(cacheNames = "menu", key = "'routes'")
+    public boolean deleteMenu(Long id) {
+        boolean result = this.remove(new LambdaQueryWrapper<SysMenu>()
+                .eq(SysMenu::getId, id)
+                .or()
+                .apply("CONCAT (',',tree_path,',') LIKE CONCAT('%,',{0},',%')", id));
+
+
+        // 刷新角色权限缓存
+        if (result) {
+            roleMenuService.refreshRolePermsCache();
+        }
+        return result;
+    }
+
+    //获取菜单表单数据
+    @Override
+    public MenuForm getMenuForm(Long id) {
+        SysMenu entity = this.getById(id);
+        Assert.isTrue(entity != null, "菜单不存在");
+
+        MenuForm formData = menuConverter.toForm(entity);
+        // 路由参数字符串 {"id":"1","name":"张三"} 转换为 [{key:"id", value:"1"}, {key:"name", value:"张三"}]
+        String params = entity.getParams();
+        if (StrUtil.isNotBlank(params)) {
+            ObjectMapper objectMapper = new ObjectMapper();
+            try {
+                // 解析 JSON 字符串为 Map<String, String>
+                Map<String, String> paramMap = objectMapper.readValue(params, new TypeReference<>() {
+                });
+
+                // 转换为 List<KeyValue> 格式 [{key:"id", value:"1"}, {key:"name", value:"张三"}]
+                List<KeyValue> transformedList = paramMap.entrySet().stream()
+                        .map(entry -> new KeyValue(entry.getKey(), entry.getValue()))
+                        .toList();
+
+                // 将转换后的列表存入 MenuForm
+                formData.setParams(transformedList);
+            } catch (Exception e) {
+                throw new RuntimeException("解析参数失败", e);
+            }
+        }
+
+        return formData;
+    }
+
+    //菜单路径生成
+    private String generateMenuTreePath(Long parentId) {
+        if (SystemConstants.ROOT_NODE_ID.equals(parentId)) {
+            return String.valueOf(parentId);
+        } else {
+            SysMenu parent = this.getById(parentId);
+            return parent != null ? parent.getTreePath() + "," + parent.getId() : null;
+        }
+    }
+
+    //递归生成菜单列表
+    private List<MenuVO> buildMenuTree(Long parentId, List<SysMenu> menuList) {
+        return CollectionUtil.emptyIfNull(menuList)
+                .stream()
+                .filter(menu -> menu.getParentId().equals(parentId))
+                .map(entity -> {
+                    MenuVO menuVO = menuConverter.toVo(entity);
+                    List<MenuVO> children = buildMenuTree(entity.getId(), menuList);
+                    menuVO.setChildren(children);
+                    return menuVO;
+                }).toList();
     }
 
     //递归生成菜单下拉层级列表
