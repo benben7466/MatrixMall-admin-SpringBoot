@@ -58,4 +58,11 @@ public class SysUserRoleServiceImpl extends ServiceImpl<SysUserRoleMapper, SysUs
         }
 
     }
+
+    //判断角色是否存在绑定的用户
+    @Override
+    public boolean hasAssignedUsers(Long roleId) {
+        int count = this.baseMapper.countUsersForRole(roleId);
+        return count > 0;
+    }
 }

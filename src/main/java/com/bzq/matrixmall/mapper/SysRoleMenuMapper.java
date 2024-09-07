@@ -16,4 +16,7 @@ public interface SysRoleMenuMapper extends BaseMapper<SysRoleMenu> {
 
     //获取权限和拥有权限的角色列表
     List<RolePermsBO> getRolePermsList(String roleCode);
+
+    //获取角色拥有的菜单ID集合
+    List<Long> listMenuIdsByRoleId(Long roleId);
 }

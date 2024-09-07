@@ -8,4 +8,6 @@ import org.apache.ibatis.annotations.Mapper;
 @Mapper
 public interface SysUserRoleMapper extends BaseMapper<SysUserRole> {
 
+    //获取角色绑定的用户数
+    int countUsersForRole(Long roleId);
 }

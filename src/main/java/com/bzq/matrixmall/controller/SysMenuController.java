@@ -1,14 +1,17 @@
 package com.bzq.matrixmall.controller;
 
+import com.bzq.matrixmall.common.model.Option;
 import com.bzq.matrixmall.common.result.Result;
 import com.bzq.matrixmall.model.vo.RouteVO;
 import com.bzq.matrixmall.security.util.SecurityUtils;
 import com.bzq.matrixmall.service.SysMenuService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -30,6 +33,16 @@ public class SysMenuController {
         Set<String> roles = SecurityUtils.getRoles();
         List<RouteVO> routeList = menuService.listRoutes(roles);
         return Result.success(routeList);
+    }
+
+    @Operation(summary = "菜单下拉列表")
+    @GetMapping("/options")
+    public Result<?> listMenuOptions(
+            @Parameter(description = "是否只查询父级菜单")
+            @RequestParam(required = false, defaultValue = "false") boolean onlyParent
+    ) {
+        List<Option> menus = menuService.listMenuOptions(onlyParent);
+        return Result.success(menus);
     }
 
 }

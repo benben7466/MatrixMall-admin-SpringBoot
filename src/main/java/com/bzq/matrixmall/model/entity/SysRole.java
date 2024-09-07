@@ -1,10 +1,12 @@
 package com.bzq.matrixmall.model.entity;
 
+import com.baomidou.mybatisplus.annotation.TableName;
 import com.bzq.matrixmall.common.base.BaseEntity;
 import lombok.Getter;
 import lombok.Setter;
 
 //角色实体，对应数据库字段
+@TableName("sys_role")
 @Getter
 @Setter
 public class SysRole extends BaseEntity {

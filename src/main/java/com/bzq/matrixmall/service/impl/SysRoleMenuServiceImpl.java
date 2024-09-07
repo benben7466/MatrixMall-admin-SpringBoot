@@ -94,4 +94,10 @@ public class SysRoleMenuServiceImpl extends ServiceImpl<SysRoleMenuMapper, SysRo
         }
     }
 
+    //获取角色拥有的菜单ID集合
+    @Override
+    public List<Long> listMenuIdsByRoleId(Long roleId) {
+        return this.baseMapper.listMenuIdsByRoleId(roleId);
+    }
+
 }

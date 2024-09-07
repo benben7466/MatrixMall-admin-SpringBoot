@@ -3,8 +3,10 @@ package com.bzq.matrixmall.service.impl;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.bzq.matrixmall.common.constant.SystemConstants;
+import com.bzq.matrixmall.common.model.Option;
 import com.bzq.matrixmall.enums.MenuTypeEnum;
 import com.bzq.matrixmall.enums.StatusEnum;
 import com.bzq.matrixmall.mapper.SysMenuMapper;
@@ -34,6 +36,35 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
 
         List<RouteBO> menuList = this.baseMapper.listRoutes(roles);
         return buildRoutes(SystemConstants.ROOT_NODE_ID, menuList);
+    }
+
+
+    //菜单下拉数据
+    @Override
+    public List<Option> listMenuOptions(boolean onlyParent) {
+        List<SysMenu> menuList = this.list(new LambdaQueryWrapper<SysMenu>()
+                .in(onlyParent, SysMenu::getType, MenuTypeEnum.CATALOG.getValue(), MenuTypeEnum.MENU.getValue())
+                .orderByAsc(SysMenu::getSort)
+        );
+        return buildMenuOptions(SystemConstants.ROOT_NODE_ID, menuList);
+    }
+
+    //递归生成菜单下拉层级列表
+    private List<Option> buildMenuOptions(Long parentId, List<SysMenu> menuList) {
+        List<Option> menuOptions = new ArrayList<>();
+
+        for (SysMenu menu : menuList) {
+            if (menu.getParentId().equals(parentId)) {
+                Option option = new Option(menu.getId(), menu.getName());
+                List<Option> subMenuOptions = buildMenuOptions(menu.getId(), menuList);
+                if (!subMenuOptions.isEmpty()) {
+                    option.setChildren(subMenuOptions);
+                }
+                menuOptions.add(option);
+            }
+        }
+
+        return menuOptions;
     }
 
     //递归生成菜单路由层级列表
