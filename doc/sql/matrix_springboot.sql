@@ -11,7 +11,7 @@
  Target Server Version : 80039 (8.0.39)
  File Encoding         : 65001
 
- Date: 08/09/2024 11:30:53
+ Date: 08/09/2024 22:51:17
 */
 
 SET NAMES utf8mb4;
@@ -82,7 +82,7 @@ CREATE TABLE `prod_info`  (
   `product_name` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT '' COMMENT '商品名称',
   `product_name_sub` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT '' COMMENT '商品子名称',
   `brand_id` int UNSIGNED NOT NULL DEFAULT 0 COMMENT '品牌编号',
-  `is_delete` tinyint UNSIGNED NOT NULL DEFAULT 0 COMMENT '是否删除',
+  `is_deleted` tinyint UNSIGNED NOT NULL DEFAULT 0 COMMENT '是否删除',
   `specifications` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT '' COMMENT '规格',
   `unit` bigint UNSIGNED NOT NULL DEFAULT 0 COMMENT '单位-字典表',
   `expiration_date` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT '' COMMENT '保质期',
@@ -94,11 +94,12 @@ CREATE TABLE `prod_info`  (
   `create_by` int NOT NULL DEFAULT 0 COMMENT '创建人ID',
   `update_by` int NOT NULL DEFAULT 0 COMMENT '更新人ID',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 5 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of prod_info
 -- ----------------------------
+INSERT INTO `prod_info` VALUES (4, '澳大利亚新康利维他麦野莓味麦片500g', '四种野莓 媲美零食', 1, 0, '500g', 10, '20天', 12, '澳大利亚 麦片', '澳大利亚 麦片', '2024-09-08 19:35:38', '2024-09-08 22:29:49', 2, 2);
 
 -- ----------------------------
 -- Table structure for sys_config
@@ -148,7 +149,7 @@ CREATE TABLE `sys_dept`  (
 -- ----------------------------
 INSERT INTO `sys_dept` VALUES (1, '贲氏技术', 'BZQ', 0, '0', 1, 1, 1, NULL, 1, '2024-06-24 23:48:59', 0);
 INSERT INTO `sys_dept` VALUES (2, '研发部门', 'RD001', 1, '0,1', 1, 1, 2, NULL, 2, '2022-04-19 12:46:37', 0);
-INSERT INTO `sys_dept` VALUES (3, '测试部门', 'QA002', 1, '0,1', 3, 1, 2, NULL, 2, '2024-09-07 16:35:59', 0);
+INSERT INTO `sys_dept` VALUES (3, '测试部门', 'QA002', 1, '0,1', 4, 1, 2, NULL, 0, '2024-09-08 17:03:35', 0);
 
 -- ----------------------------
 -- Table structure for sys_dict
@@ -294,9 +295,9 @@ INSERT INTO `sys_menu` VALUES (107, 2, '0,1,2', '用户导出', 4, NULL, '', NUL
 INSERT INTO `sys_menu` VALUES (117, 1, '0,1', '系统日志', 1, 'Log', 'log', 'system/log/index', NULL, 0, 1, 1, 6, 'document', NULL, '2024-06-28 07:43:16', '2024-06-28 07:43:16', NULL);
 INSERT INTO `sys_menu` VALUES (120, 0, '0', '商品管理', 2, NULL, '/product', 'Layout', NULL, 1, 1, 1, 1, 'el-icon-Bowl', NULL, '2024-09-07 11:10:04', '2024-09-07 13:03:58', NULL);
 INSERT INTO `sys_menu` VALUES (121, 120, '0,120', '商品信息管理', 1, 'Info', 'info', 'product/info/index', NULL, 0, 1, 1, 1, 'el-icon-ColdDrink', NULL, '2024-09-07 11:21:14', '2024-09-07 13:10:01', NULL);
-INSERT INTO `sys_menu` VALUES (123, 121, '0,120,121', '商品信息新增', 4, NULL, '', NULL, 'product:info:add', NULL, NULL, 1, 1, '', NULL, '2024-09-07 13:05:33', '2024-09-07 13:10:35', NULL);
-INSERT INTO `sys_menu` VALUES (124, 121, '0,120,121', '商品信息编辑', 4, NULL, '', NULL, 'product:info:edit', NULL, NULL, 1, 2, '', NULL, '2024-09-07 13:10:58', '2024-09-07 13:11:26', NULL);
-INSERT INTO `sys_menu` VALUES (125, 121, '0,120,121', '商品信息删除', 4, NULL, '', NULL, 'product:info:delete', NULL, NULL, 1, 3, '', NULL, '2024-09-07 13:12:24', '2024-09-07 13:12:24', NULL);
+INSERT INTO `sys_menu` VALUES (123, 121, '0,120,121', '商品信息新增', 4, NULL, '', NULL, 'prod:info:add', NULL, NULL, 1, 1, '', NULL, '2024-09-07 13:05:33', '2024-09-08 15:19:22', NULL);
+INSERT INTO `sys_menu` VALUES (124, 121, '0,120,121', '商品信息编辑', 4, NULL, '', NULL, 'prod:info:edit', NULL, NULL, 1, 2, '', NULL, '2024-09-07 13:10:58', '2024-09-08 15:19:42', NULL);
+INSERT INTO `sys_menu` VALUES (125, 121, '0,120,121', '商品信息删除', 4, NULL, '', NULL, 'prod:info:delete', NULL, NULL, 1, 3, '', NULL, '2024-09-07 13:12:24', '2024-09-08 15:19:55', NULL);
 
 -- ----------------------------
 -- Table structure for sys_message
@@ -419,7 +420,7 @@ CREATE TABLE `sys_user`  (
 -- Records of sys_user
 -- ----------------------------
 INSERT INTO `sys_user` VALUES (1, 'root', '贲氏科技', 0, '$2a$10$xVWsNOhHrCxh5UbpCE7/HuJ.PAOKcYAqRxD2CO2nVnJS.IAXkr5aq', NULL, 'http://benzhiqiang.w1.luyouxia.net/img/bootstrap-logo.svg', '17621590365', 1, 'youlaitech@163.com', NULL, NULL, NULL, NULL, 0);
-INSERT INTO `sys_user` VALUES (2, 'admin', '系统管理员', 1, '$2a$10$xVWsNOhHrCxh5UbpCE7/HuJ.PAOKcYAqRxD2CO2nVnJS.IAXkr5aq', 1, 'http://benzhiqiang.w1.luyouxia.net/img/bootstrap-logo.svg', '17621210366', 1, '', '2019-10-10 13:41:22', NULL, '2022-07-31 12:39:30', NULL, 0);
+INSERT INTO `sys_user` VALUES (2, 'admin', '系统管理员', 1, '$2a$10$xVWsNOhHrCxh5UbpCE7/HuJ.PAOKcYAqRxD2CO2nVnJS.IAXkr5aq', 1, 'http://benzhiqiang.w1.luyouxia.net/img/bootstrap-logo.svg', '13426286424', 1, '', '2019-10-10 13:41:22', NULL, '2024-09-08 15:22:45', NULL, 0);
 INSERT INTO `sys_user` VALUES (3, 'test', '测试用户', 2, '$2a$10$xVWsNOhHrCxh5UbpCE7/HuJ.PAOKcYAqRxD2CO2nVnJS.IAXkr5aq', 3, 'http://benzhiqiang.w1.luyouxia.net/img/bootstrap-logo.svg', '17621210366', 1, 'youlaitech@163.com', '2021-06-05 01:31:29', NULL, '2024-09-05 23:58:52', NULL, 0);
 
 -- ----------------------------

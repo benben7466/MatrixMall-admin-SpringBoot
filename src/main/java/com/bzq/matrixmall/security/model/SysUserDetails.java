@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 public class SysUserDetails implements UserDetails{
     @Getter
-    private Long userId;
+    private Integer userId;
     private String username;
     private String password;
     private Boolean enabled;

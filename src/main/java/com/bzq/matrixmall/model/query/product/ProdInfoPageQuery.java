@@ -17,7 +17,7 @@ public class ProdInfoPageQuery extends BasePageQuery {
     private Long brandId;
 
     @Schema(description = "是否删除")
-    private Integer status;
+    private Integer isDeleted;
 
     @Schema(description = "创建时间范围")
     private List<String> createTime;

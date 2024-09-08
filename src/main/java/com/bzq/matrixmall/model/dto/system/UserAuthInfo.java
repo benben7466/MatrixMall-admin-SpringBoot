@@ -10,7 +10,7 @@ import java.util.Set;
 @Data
 public class UserAuthInfo {
     @Schema(description = "用户ID")
-    private Long userId;
+    private Integer userId;
 
     @Schema(description = "用户名")
     private String username;

@@ -20,7 +20,7 @@ public class ProdInfoVO {
     private Integer brandId;
 
     @Schema(description="是否删除")
-    private Integer is_delete;
+    private Integer isDeleted;
 
     @Schema(description="规格")
     private String specifications;

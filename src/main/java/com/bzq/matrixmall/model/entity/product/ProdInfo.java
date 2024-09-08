@@ -13,8 +13,8 @@ public class ProdInfo extends BaseEntity {
     private String productName;//商品名称
     private String productNameSub;//商品子名称
     private Integer brandId;//品牌编号
-    private Integer is_delete;//是否删除
-    private Integer specifications;//规格
+    private Integer isDeleted;//是否删除
+    private String specifications;//规格
     private Long unit;//单位
     private String expirationDate;//保质期
     private Long producingArea;//产地

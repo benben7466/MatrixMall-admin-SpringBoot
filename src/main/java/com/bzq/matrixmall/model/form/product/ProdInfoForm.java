@@ -22,12 +22,7 @@ public class ProdInfoForm {
     private String productNameSub;
 
     @Schema(description="品牌编号")
-    @NotBlank(message = "品牌编号不能为空")
     private Integer brandId;
-
-    @Schema(description="是否删除")
-    @Range(min = 0, max = 1, message = "删除状态不正确")
-    private Integer is_delete;
 
     @Schema(description="规格")
     private String specifications;

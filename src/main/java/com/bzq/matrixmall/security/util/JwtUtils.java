@@ -68,7 +68,7 @@ public class JwtUtils {
     //从 JWT Token 中解析 Authentication  用户认证信息
     public static UsernamePasswordAuthenticationToken getAuthentication(JSONObject payloads) {
         SysUserDetails userDetails = new SysUserDetails();
-        userDetails.setUserId(payloads.getLong(JwtClaimConstants.USER_ID)); // 用户ID
+        userDetails.setUserId(payloads.getInt(JwtClaimConstants.USER_ID)); // 用户ID
         userDetails.setDeptId(payloads.getLong(JwtClaimConstants.DEPT_ID)); // 部门ID
         userDetails.setDataScope(payloads.getInt(JwtClaimConstants.DATA_SCOPE)); // 数据权限范围
 

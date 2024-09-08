@@ -28,6 +28,11 @@ public class SecurityUtils {
         return Optional.empty();
     }
 
+    //获取用户ID
+    public static Integer getUserId() {
+        return getUser().map(SysUserDetails::getUserId).orElse(null);
+    }
+
     //获取用户账号
     public static String getUsername() {
         return getUser().map(SysUserDetails::getUsername).orElse(null);
