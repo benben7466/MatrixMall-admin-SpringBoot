@@ -11,7 +11,7 @@
  Target Server Version : 80039 (8.0.39)
  File Encoding         : 65001
 
- Date: 08/09/2024 10:15:20
+ Date: 08/09/2024 11:30:53
 */
 
 SET NAMES utf8mb4;
@@ -78,22 +78,22 @@ CREATE TABLE `gen_field_config`  (
 -- ----------------------------
 DROP TABLE IF EXISTS `prod_info`;
 CREATE TABLE `prod_info`  (
-  `product_id` int UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '商品编号',
+  `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '商品编号',
   `product_name` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT '' COMMENT '商品名称',
   `product_name_sub` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT '' COMMENT '商品子名称',
-  `brand_id` int NOT NULL DEFAULT 0 COMMENT '品牌编号',
-  `is_delete` tinyint NOT NULL DEFAULT 0 COMMENT '是否删除',
+  `brand_id` int UNSIGNED NOT NULL DEFAULT 0 COMMENT '品牌编号',
+  `is_delete` tinyint UNSIGNED NOT NULL DEFAULT 0 COMMENT '是否删除',
   `specifications` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT '' COMMENT '规格',
-  `unit` varchar(16) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT '' COMMENT '单位',
+  `unit` bigint UNSIGNED NOT NULL DEFAULT 0 COMMENT '单位-字典表',
   `expiration_date` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT '' COMMENT '保质期',
-  `producing_area` varchar(40) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT '' COMMENT '产地',
+  `producing_area` bigint UNSIGNED NOT NULL DEFAULT 0 COMMENT '产地',
   `seo_keyword` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT '' COMMENT 'SEO关键词',
   `seo_description` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT '' COMMENT 'SEO描述',
   `create_time` datetime NULL DEFAULT NULL COMMENT '创建时间',
   `update_time` datetime NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   `create_by` int NOT NULL DEFAULT 0 COMMENT '创建人ID',
   `update_by` int NOT NULL DEFAULT 0 COMMENT '更新人ID',
-  PRIMARY KEY (`product_id`) USING BTREE
+  PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------

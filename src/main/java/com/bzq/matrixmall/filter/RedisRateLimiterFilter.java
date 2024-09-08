@@ -1,7 +1,7 @@
 package com.bzq.matrixmall.filter;
 
 import com.bzq.matrixmall.common.constant.RedisConstants;
-import com.bzq.matrixmall.service.SysConfigService;
+import com.bzq.matrixmall.service.system.SysConfigService;
 import com.bzq.matrixmall.common.result.ResultCode;
 import com.bzq.matrixmall.util.IPUtils;
 import com.bzq.matrixmall.util.ResponseUtils;

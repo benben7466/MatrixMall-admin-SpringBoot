@@ -2,10 +2,10 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.bzq.matrixmall.mapper.SysLogMapper">
+<mapper namespace="com.bzq.matrixmall.mapper.system.SysLogMapper">
 
     <!-- 日志分页列表 -->
-    <select id="listPagedLogs" resultType="com.bzq.matrixmall.model.vo.LogPageVO">
+    <select id="listPagedLogs" resultType="com.bzq.matrixmall.model.vo.system.LogPageVO">
         SELECT
             t1.id,
             t1.module,

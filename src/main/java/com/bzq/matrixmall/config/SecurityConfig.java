@@ -9,7 +9,7 @@ import com.bzq.matrixmall.filter.JwtValidationFilter;
 import com.bzq.matrixmall.filter.RedisRateLimiterFilter;
 import com.bzq.matrixmall.security.exception.MyAccessDeniedHandler;
 import com.bzq.matrixmall.security.exception.MyAuthenticationEntryPoint;
-import com.bzq.matrixmall.service.SysConfigService;
+import com.bzq.matrixmall.service.system.SysConfigService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

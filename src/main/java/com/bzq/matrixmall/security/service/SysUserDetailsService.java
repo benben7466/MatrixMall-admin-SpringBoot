@@ -1,8 +1,8 @@
 package com.bzq.matrixmall.security.service;
 
-import com.bzq.matrixmall.model.dto.UserAuthInfo;
+import com.bzq.matrixmall.model.dto.system.UserAuthInfo;
 import com.bzq.matrixmall.security.model.SysUserDetails;
-import com.bzq.matrixmall.service.SysUserService;
+import com.bzq.matrixmall.service.system.SysUserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UserDetails;

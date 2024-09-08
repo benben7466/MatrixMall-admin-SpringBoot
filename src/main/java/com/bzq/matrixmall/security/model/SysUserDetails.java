@@ -2,7 +2,7 @@ package com.bzq.matrixmall.security.model;
 
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.ObjectUtil;
-import com.bzq.matrixmall.model.dto.UserAuthInfo;
+import com.bzq.matrixmall.model.dto.system.UserAuthInfo;
 import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

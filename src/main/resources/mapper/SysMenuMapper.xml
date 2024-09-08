@@ -2,7 +2,7 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.bzq.matrixmall.mapper.SysMenuMapper">
+<mapper namespace="com.bzq.matrixmall.mapper.system.SysMenuMapper">
     <!-- 获取路由列表 -->
     <select id="listRoutes" resultMap="RouteMap">
         SELECT
@@ -40,7 +40,7 @@
     </select>
 
     <!-- 菜单路由映射 -->
-    <resultMap id="RouteMap" type="com.bzq.matrixmall.model.bo.RouteBO">
+    <resultMap id="RouteMap" type="com.bzq.matrixmall.model.bo.system.RouteBO">
         <id property="id" column="id" jdbcType="BIGINT"/>
         <result property="name" column="name" jdbcType="VARCHAR"/>
         <result property="parentId" column="parent_id" jdbcType="BIGINT"/>
