@@ -2,9 +2,11 @@ package com.bzq.matrixmall.model.entity.system;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.bzq.matrixmall.common.model.Option;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.util.List;
 
 //字典项实体
 @Data

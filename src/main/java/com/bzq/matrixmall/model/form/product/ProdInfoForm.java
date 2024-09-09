@@ -7,6 +7,8 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 import org.hibernate.validator.constraints.Range;
 
+import java.time.LocalDateTime;
+
 @Schema(description = "商品信息表单对象")
 @Data
 public class ProdInfoForm {
@@ -41,4 +43,7 @@ public class ProdInfoForm {
 
     @Schema(description="SEO描述")
     private String seoDescription;
+
+    @Schema(description="更新时间")
+    private LocalDateTime updateTime;
 }

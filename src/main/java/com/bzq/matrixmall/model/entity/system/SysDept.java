@@ -2,8 +2,11 @@ package com.bzq.matrixmall.model.entity.system;
 
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.bzq.matrixmall.common.base.BaseEntity;
+import com.bzq.matrixmall.model.vo.system.DeptVO;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.List;
 
 //部门实体，对应数据库字段
 @TableName("sys_dept")

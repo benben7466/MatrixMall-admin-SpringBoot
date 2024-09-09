@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.validator.constraints.Range;
 
+import java.time.LocalDateTime;
+
 @Schema(description = "部门表单对象")
 @Getter
 @Setter
@@ -29,4 +31,5 @@ public class DeptForm {
 
     @Schema(description="排序(数字越小排名越靠前)", example = "1")
     private Integer sort;
+
 }

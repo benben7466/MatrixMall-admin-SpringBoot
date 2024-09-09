@@ -34,7 +34,8 @@
         expiration_date,
         producing_area,
         seo_keyword,
-        seo_description
+        seo_description,
+        update_time
         FROM
         prod_info
         <where>
