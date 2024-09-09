@@ -1,8 +1,14 @@
 package com.bzq.matrixmall.controller.product;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.bzq.matrixmall.common.result.PageResult;
 import com.bzq.matrixmall.common.result.Result;
+import com.bzq.matrixmall.enums.LogModuleEnum;
 import com.bzq.matrixmall.model.form.product.ProdInfoForm;
+import com.bzq.matrixmall.model.query.system.UserPageQuery;
+import com.bzq.matrixmall.model.vo.system.UserPageVO;
 import com.bzq.matrixmall.plugin.norepeat.annotation.PreventRepeatSubmit;
+import com.bzq.matrixmall.plugin.syslog.annotation.LogAnnotation;
 import com.bzq.matrixmall.service.product.ProdInfoService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -50,6 +56,24 @@ public class ProdInfoController {
             @RequestBody @Validated ProdInfoForm prodInfoForm) {
         boolean result = prodInfoService.updateProdInfo(prodId, prodInfoForm);
         return Result.judge(result);
+    }
+
+    @Operation(summary = "删除商品信息")
+    @DeleteMapping("/{ids}")
+    @PreAuthorize("@ss.hasPerm('prod:info:delete')")
+    public Result<?> deleteProdInfo(
+            @Parameter(description = "商品ID，多个以英文逗号(,)分割") @PathVariable String ids
+    ) {
+        boolean result = prodInfoService.deleteProdInfo(ids);
+        return Result.judge(result);
+    }
+
+    @Operation(summary = "商品信息分页列表")
+    @GetMapping("/page")
+    @LogAnnotation(value = "商品信息分页列表", module = LogModuleEnum.PROD_INFO)
+    public PageResult<UserPageVO> listPagedUsers(UserPageQuery queryParams) {
+        IPage<UserPageVO> result = userService.listPagedUsers(queryParams);
+        return PageResult.success(result);
     }
 
 }

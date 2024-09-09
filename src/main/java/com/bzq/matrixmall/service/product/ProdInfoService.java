@@ -15,4 +15,6 @@ public interface ProdInfoService extends IService<ProdInfo> {
     //更新商品信息
     boolean updateProdInfo(Long prodId, ProdInfoForm prodInfoForm);
 
+    //删除商品信息
+    boolean deleteProdInfo(String ids);
 }

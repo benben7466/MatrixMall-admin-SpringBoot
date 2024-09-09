@@ -9,13 +9,19 @@ import lombok.Getter;
 @Getter
 public enum LogModuleEnum {
 
+    //system
     LOGIN("登录"),
     USER("用户"),
     DEPT("部门"),
     ROLE("角色"),
     MENU("菜单"),
     DICT("字典"),
+
+    //product
+    PROD_INFO("商品信息"),
+
     OTHER("其他");
+
 
     @JsonValue
     private final String moduleName;

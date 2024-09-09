@@ -1,6 +1,7 @@
 package com.bzq.matrixmall.service.product.impl;
 
 import cn.hutool.core.lang.Assert;
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.bzq.matrixmall.converter.product.ProdInfoConverter;
@@ -11,6 +12,10 @@ import com.bzq.matrixmall.model.form.product.ProdInfoForm;
 import com.bzq.matrixmall.service.product.ProdInfoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -44,6 +49,7 @@ public class ProdInfoServiceImpl extends ServiceImpl<ProdInfoMapper, ProdInfo> i
         return prodInfoConverter.toForm(prodInfo);
     }
 
+    //更新商品信息
     @Override
     public boolean updateProdInfo(Long prodId, ProdInfoForm prodInfoForm) {
         String prodName = prodInfoForm.getProductName();
@@ -59,5 +65,17 @@ public class ProdInfoServiceImpl extends ServiceImpl<ProdInfoMapper, ProdInfo> i
         entity.setId(prodId);
 
         return this.updateById(entity);
+    }
+
+    //删除商品信息
+    @Override
+    public boolean deleteProdInfo(String idsStr) {
+        Assert.isTrue(StrUtil.isNotBlank(idsStr), "删除的商品数据为空");
+
+        // 逻辑删除
+        List<Long> ids = Arrays.stream(idsStr.split(","))
+                .map(Long::parseLong)
+                .collect(Collectors.toList());
+        return this.removeByIds(ids);
     }
 }
