@@ -5,7 +5,9 @@ import com.bzq.matrixmall.common.result.PageResult;
 import com.bzq.matrixmall.common.result.Result;
 import com.bzq.matrixmall.enums.LogModuleEnum;
 import com.bzq.matrixmall.model.form.product.ProdInfoForm;
+import com.bzq.matrixmall.model.query.product.ProdInfoPageQuery;
 import com.bzq.matrixmall.model.query.system.UserPageQuery;
+import com.bzq.matrixmall.model.vo.product.ProdInfoVO;
 import com.bzq.matrixmall.model.vo.system.UserPageVO;
 import com.bzq.matrixmall.plugin.norepeat.annotation.PreventRepeatSubmit;
 import com.bzq.matrixmall.plugin.syslog.annotation.LogAnnotation;
@@ -71,8 +73,8 @@ public class ProdInfoController {
     @Operation(summary = "商品信息分页列表")
     @GetMapping("/page")
     @LogAnnotation(value = "商品信息分页列表", module = LogModuleEnum.PROD_INFO)
-    public PageResult<UserPageVO> listPagedUsers(UserPageQuery queryParams) {
-        IPage<UserPageVO> result = userService.listPagedUsers(queryParams);
+    public PageResult<ProdInfoVO> listPagedUsers(ProdInfoPageQuery queryParams) {
+        IPage<ProdInfoVO> result = prodInfoService.listPageProdInfo(queryParams);
         return PageResult.success(result);
     }
 

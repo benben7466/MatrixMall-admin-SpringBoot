@@ -3,12 +3,17 @@ package com.bzq.matrixmall.service.product.impl;
 import cn.hutool.core.lang.Assert;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.bzq.matrixmall.converter.product.ProdInfoConverter;
 import com.bzq.matrixmall.mapper.product.ProdInfoMapper;
+import com.bzq.matrixmall.model.bo.system.UserBO;
 import com.bzq.matrixmall.model.entity.product.ProdInfo;
 import com.bzq.matrixmall.model.entity.system.SysUser;
 import com.bzq.matrixmall.model.form.product.ProdInfoForm;
+import com.bzq.matrixmall.model.query.product.ProdInfoPageQuery;
+import com.bzq.matrixmall.model.vo.product.ProdInfoVO;
 import com.bzq.matrixmall.service.product.ProdInfoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -77,5 +82,16 @@ public class ProdInfoServiceImpl extends ServiceImpl<ProdInfoMapper, ProdInfo> i
                 .map(Long::parseLong)
                 .collect(Collectors.toList());
         return this.removeByIds(ids);
+    }
+
+    //商品信息分页列表
+    @Override
+    public IPage<ProdInfoVO> listPageProdInfo(ProdInfoPageQuery queryParams) {
+        // 参数构建
+        int pageNum = queryParams.getPageNum();
+        int pageSize = queryParams.getPageSize();
+
+        // 查询数据
+        return this.baseMapper.listPageProdInfo(new Page<>(pageNum, pageSize), queryParams);
     }
 }

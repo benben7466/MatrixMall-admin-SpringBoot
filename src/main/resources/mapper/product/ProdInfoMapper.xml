@@ -21,4 +21,25 @@
         WHERE
             id = #{prodId} AND is_deleted = 0
     </select>
+
+    <!-- 商品信息分页列表 -->
+    <select id="listPageProdInfo" resultType="com.bzq.matrixmall.model.vo.product.ProdInfoVO">
+        SELECT
+        id,
+        product_name,
+        product_name_sub
+        FROM
+        prod_info
+        <where>
+            is_deleted = 0
+            <if test='queryParams.keywords!=null and queryParams.keywords.trim() neq ""'>
+                AND (
+                product_name LIKE CONCAT('%',#{queryParams.keywords},'%')
+                OR product_name_sub LIKE CONCAT('%',#{queryParams.keywords},'%')
+                )
+            </if>
+        </where>
+        ORDER BY
+        create_time DESC
+    </select>
 </mapper>

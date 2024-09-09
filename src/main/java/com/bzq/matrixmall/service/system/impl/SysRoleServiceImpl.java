@@ -65,7 +65,9 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
         String keywords = queryParams.getKeywords();
 
         // 查询数据
-        Page<SysRole> rolePage = this.page(new Page<>(pageNum, pageSize), new LambdaQueryWrapper<SysRole>().and(StrUtil.isNotBlank(keywords), wrapper -> wrapper.like(StrUtil.isNotBlank(keywords), SysRole::getName, keywords).or().like(StrUtil.isNotBlank(keywords), SysRole::getCode, keywords)).ne(!SecurityUtils.isRoot(), SysRole::getCode, SystemConstants.ROOT_ROLE_CODE) // 非超级管理员不显示超级管理员角色
+        Page<SysRole> rolePage = this.page(new Page<>(pageNum, pageSize), new LambdaQueryWrapper<SysRole>()
+                .and(StrUtil.isNotBlank(keywords), wrapper -> wrapper.like(StrUtil.isNotBlank(keywords), SysRole::getName, keywords).or().like(StrUtil.isNotBlank(keywords), SysRole::getCode, keywords))
+                .ne(!SecurityUtils.isRoot(), SysRole::getCode, SystemConstants.ROOT_ROLE_CODE) // 非超级管理员不显示超级管理员角色
         );
 
         // 实体转换
