@@ -27,7 +27,14 @@
         SELECT
         id,
         product_name,
-        product_name_sub
+        product_name_sub,
+        brand_id,
+        specifications,
+        unit,
+        expiration_date,
+        producing_area,
+        seo_keyword,
+        seo_description
         FROM
         prod_info
         <where>
