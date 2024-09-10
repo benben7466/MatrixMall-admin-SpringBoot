@@ -1,6 +1,7 @@
 package com.bzq.matrixmall.controller.product;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.bzq.matrixmall.common.model.Option;
 import com.bzq.matrixmall.common.result.PageResult;
 import com.bzq.matrixmall.common.result.Result;
 import com.bzq.matrixmall.enums.LogModuleEnum;
@@ -17,6 +18,8 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 //用户控制层
 @Tag(name = "102.商品品牌接口")
@@ -70,6 +73,13 @@ public class ProdBrandController {
     public PageResult<ProdBrandPageVO> listPagedBrand(ProdBrandPageQuery queryParams) {
         IPage<ProdBrandPageVO> result = prodBrandService.listPageProdBrand(queryParams);
         return PageResult.success(result);
+    }
+
+    @Operation(summary = "品牌下拉列表")
+    @GetMapping("/options")
+    public Result<List<Option<Long>>> listRoleOptions() {
+        List<Option<Long>> list = prodBrandService.listBrandOptions();
+        return Result.success(list);
     }
 
 }

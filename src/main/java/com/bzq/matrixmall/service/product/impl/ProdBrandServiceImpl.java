@@ -6,12 +6,16 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.bzq.matrixmall.common.constant.SystemConstants;
+import com.bzq.matrixmall.common.model.Option;
 import com.bzq.matrixmall.converter.product.ProdBrandConverter;
 import com.bzq.matrixmall.mapper.product.ProdBrandMapper;
 import com.bzq.matrixmall.model.entity.product.ProdBrand;
+import com.bzq.matrixmall.model.entity.system.SysRole;
 import com.bzq.matrixmall.model.form.product.ProdBrandForm;
 import com.bzq.matrixmall.model.query.product.ProdBrandPageQuery;
 import com.bzq.matrixmall.model.vo.product.ProdBrandPageVO;
+import com.bzq.matrixmall.security.util.SecurityUtils;
 import com.bzq.matrixmall.service.product.ProdBrandService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -95,5 +99,18 @@ public class ProdBrandServiceImpl extends ServiceImpl<ProdBrandMapper, ProdBrand
 
         // 实体转换
         return prodBrandConverter.toPageVo(brandPage);
+    }
+
+    //品牌下拉列表
+    @Override
+    public List<Option<Long>> listBrandOptions() {
+        // 查询数据
+        List<ProdBrand> brandList = this.list(new LambdaQueryWrapper<ProdBrand>()
+                .select(ProdBrand::getId, ProdBrand::getBrandName)
+                .eq(ProdBrand::getStatus, 1)
+                .orderByAsc(ProdBrand::getSort));
+
+        // 实体转换
+        return prodBrandConverter.entities2Options(brandList);
     }
 }

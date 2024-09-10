@@ -18,8 +18,8 @@ public class ProdInfoVO {
     @Schema(description="商品子名称")
     private String productNameSub;
 
-    @Schema(description="品牌编号")
-    private Integer brandId;
+    @Schema(description="品牌名称")
+    private String brandName;
 
     @Schema(description="是否删除")
     private Integer isDeleted;

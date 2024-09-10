@@ -2,10 +2,13 @@ package com.bzq.matrixmall.service.product;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.bzq.matrixmall.common.model.Option;
 import com.bzq.matrixmall.model.entity.product.ProdBrand;
 import com.bzq.matrixmall.model.form.product.ProdBrandForm;
 import com.bzq.matrixmall.model.query.product.ProdBrandPageQuery;
 import com.bzq.matrixmall.model.vo.product.ProdBrandPageVO;
+
+import java.util.List;
 
 public interface ProdBrandService extends IService<ProdBrand> {
 
@@ -23,4 +26,7 @@ public interface ProdBrandService extends IService<ProdBrand> {
 
     //商品品牌分页列表
     IPage<ProdBrandPageVO> listPageProdBrand(ProdBrandPageQuery queryParams);
+
+    //品牌下拉列表
+    List<Option<Long>> listBrandOptions();
 }

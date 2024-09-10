@@ -25,29 +25,30 @@
     <!-- 商品信息分页列表 -->
     <select id="listPageProdInfo" resultType="com.bzq.matrixmall.model.vo.product.ProdInfoVO">
         SELECT
-        id,
-        product_name,
-        product_name_sub,
-        brand_id,
-        specifications,
-        unit,
-        expiration_date,
-        producing_area,
-        seo_keyword,
-        seo_description,
-        update_time
+        p.id,
+        p.product_name,
+        p.product_name_sub,
+        b.brand_name,
+        p.specifications,
+        p.unit,
+        p.expiration_date,
+        p.producing_area,
+        p.seo_keyword,
+        p.seo_description,
+        p.update_time
         FROM
-        prod_info
+        prod_info p
+        LEFT JOIN prod_brand b ON b.id = p.brand_id
         <where>
-            is_deleted = 0
+            p.is_deleted = 0
             <if test='queryParams.keywords!=null and queryParams.keywords.trim() neq ""'>
                 AND (
-                product_name LIKE CONCAT('%',#{queryParams.keywords},'%')
-                OR product_name_sub LIKE CONCAT('%',#{queryParams.keywords},'%')
+                p.product_name LIKE CONCAT('%',#{queryParams.keywords},'%')
+                OR p.product_name_sub LIKE CONCAT('%',#{queryParams.keywords},'%')
                 )
             </if>
         </where>
         ORDER BY
-        create_time DESC
+        p.create_time DESC
     </select>
 </mapper>
