@@ -13,4 +13,7 @@ public interface ProdCategoryService extends IService<ProdCategory> {
 
     //修改分类
     Long updateProdCategory(Long categoryId, ProdCategoryForm formData);
+
+    //删除分类
+    boolean deleteProdCategory(String ids);
 }

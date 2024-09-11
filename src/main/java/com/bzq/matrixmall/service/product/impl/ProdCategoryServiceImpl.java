@@ -1,6 +1,7 @@
 package com.bzq.matrixmall.service.product.impl;
 
 import cn.hutool.core.lang.Assert;
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.bzq.matrixmall.common.constant.SymbolConstant;
@@ -77,6 +78,22 @@ public class ProdCategoryServiceImpl extends ServiceImpl<ProdCategoryMapper, Pro
         Assert.isTrue(result, "部门更新失败");
 
         return entity.getId();
+    }
+
+    //删除分类
+    @Override
+    public boolean deleteProdCategory(String ids) {
+        // 删除分类及子部门
+        if (StrUtil.isNotBlank(ids)) {
+            String[] categoryIds = ids.split(SymbolConstant.COMMA);
+            for (String categoryId : categoryIds) {
+                this.remove(new LambdaQueryWrapper<ProdCategory>()
+                        .eq(ProdCategory::getId, categoryId)
+                        .or()
+                        .apply("CONCAT (',',tree_path,',') LIKE CONCAT('%,',{0},',%')", categoryId));
+            }
+        }
+        return true;
     }
 
     //路径生成

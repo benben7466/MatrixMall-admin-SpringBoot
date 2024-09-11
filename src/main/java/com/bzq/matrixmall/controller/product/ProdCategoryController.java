@@ -55,12 +55,11 @@ public class ProdCategoryController {
     @Operation(summary = "删除分类")
     @DeleteMapping("/{ids}")
     public Result<?> deleteProdCategory(
-            @Parameter(description = "品牌ID，多个以英文逗号(,)分割") @PathVariable String ids
+            @Parameter(description = "分类ID，多个以英文逗号(,)分割") @PathVariable String ids
     ) {
-        boolean result = prodCategoryService.deleteProdBrand(ids);
+        boolean result = prodCategoryService.deleteProdCategory(ids);
         return Result.judge(result);
     }
-
 
 }
 
