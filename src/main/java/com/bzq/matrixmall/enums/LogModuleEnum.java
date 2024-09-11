@@ -20,6 +20,7 @@ public enum LogModuleEnum {
     //product
     PROD_INFO("商品信息"),
     PROD_BRAND("商品品牌"),
+    PROD_CATEGORY("商品分类"),
 
     OTHER("其他");
 

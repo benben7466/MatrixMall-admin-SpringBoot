@@ -11,4 +11,7 @@ public interface AuthService {
 
     //登录
     LoginResult login(String username, String password);
+
+    //登出
+    void logout();
 }

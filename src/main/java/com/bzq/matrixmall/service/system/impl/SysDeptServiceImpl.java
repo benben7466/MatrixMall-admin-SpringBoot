@@ -102,8 +102,9 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> impl
     //新增部门
     @Override
     public Long saveDept(DeptForm formData) {
-        // 校验部门名称是否存在
         String code = formData.getCode();
+
+        // 校验部门名称是否存在
         long count = this.count(new LambdaQueryWrapper<SysDept>()
                 .eq(SysDept::getCode, code)
         );
