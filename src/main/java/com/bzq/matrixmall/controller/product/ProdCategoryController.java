@@ -1,12 +1,11 @@
 package com.bzq.matrixmall.controller.product;
 
+import com.bzq.matrixmall.common.model.Option;
 import com.bzq.matrixmall.common.result.Result;
 import com.bzq.matrixmall.enums.LogModuleEnum;
 import com.bzq.matrixmall.model.form.product.ProdCategoryForm;
 import com.bzq.matrixmall.model.query.product.ProdCategoryQuery;
-import com.bzq.matrixmall.model.query.system.DeptQuery;
 import com.bzq.matrixmall.model.vo.product.ProdCategoryVO;
-import com.bzq.matrixmall.model.vo.system.DeptVO;
 import com.bzq.matrixmall.plugin.norepeat.annotation.PreventRepeatSubmit;
 import com.bzq.matrixmall.plugin.syslog.annotation.LogAnnotation;
 import com.bzq.matrixmall.service.product.ProdCategoryService;
@@ -70,12 +69,19 @@ public class ProdCategoryController {
     }
 
     @Operation(summary = "分类列表")
-    @GetMapping
+    @GetMapping("/page")
     @LogAnnotation( value = "分类列表",module = LogModuleEnum.PROD_CATEGORY)
     public Result<List<ProdCategoryVO>> getProdCategoryList(
             ProdCategoryQuery queryParams
     ) {
         List<ProdCategoryVO> list = prodCategoryService.getProdCategoryList(queryParams);
+        return Result.success(list);
+    }
+
+    @Operation(summary = "分类下拉列表")
+    @GetMapping("/options")
+    public Result<List<Option<Long>>> getProdCategoryOptions() {
+        List<Option<Long>> list = prodCategoryService.listProdCategoryOptions();
         return Result.success(list);
     }
 

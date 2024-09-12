@@ -7,7 +7,9 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.bzq.matrixmall.common.constant.SymbolConstant;
 import com.bzq.matrixmall.common.constant.SystemConstants;
+import com.bzq.matrixmall.common.model.Option;
 import com.bzq.matrixmall.converter.product.ProdCategoryConverter;
+import com.bzq.matrixmall.enums.StatusEnum;
 import com.bzq.matrixmall.mapper.product.ProdCategoryMapper;
 import com.bzq.matrixmall.model.entity.product.ProdBrand;
 import com.bzq.matrixmall.model.entity.product.ProdCategory;
@@ -132,7 +134,7 @@ public class ProdCategoryServiceImpl extends ServiceImpl<ProdCategoryMapper, Pro
                 .map(ProdCategory::getParentId)
                 .collect(Collectors.toSet());
 
-        // 获取根节点ID（递归的起点），即父节点ID中不包含在ID中的节点，注意这里不能拿顶级 O 作为根节点，因为筛选的时候 O 会被过滤掉
+        // 获取根节点ID（递归的起点），即父节点ID中不包含在ID中的节点
         List<Long> rootIds = CollectionUtil.subtractToList(parentIds, prodCategoryIds);
 
         // 递归生成部门树形列表
@@ -151,6 +153,49 @@ public class ProdCategoryServiceImpl extends ServiceImpl<ProdCategoryMapper, Pro
                     prodCategoryVO.setChildren(children);
                     return prodCategoryVO;
                 }).toList();
+    }
+
+    //分类下拉列表
+    @Override
+    public List<Option<Long>> listProdCategoryOptions() {
+        List<ProdCategory> prodCategoryList = this.list(new LambdaQueryWrapper<ProdCategory>()
+                .eq(ProdCategory::getStatus, StatusEnum.ENABLE.getValue())
+                .select(ProdCategory::getId, ProdCategory::getParentId, ProdCategory::getCategoryName)
+                .orderByAsc(ProdCategory::getSort)
+        );
+        if (CollectionUtil.isEmpty(prodCategoryList)) {
+            return Collections.EMPTY_LIST;
+        }
+
+        Set<Long> categoryIds = prodCategoryList.stream()
+                .map(ProdCategory::getId)
+                .collect(Collectors.toSet());
+
+        Set<Long> parentCategoryIds = prodCategoryList.stream()
+                .map(ProdCategory::getParentId)
+                .collect(Collectors.toSet());
+
+        List<Long> rootIds = CollectionUtil.subtractToList(parentCategoryIds, categoryIds);
+
+        // 递归生成树形列表
+        return rootIds.stream()
+                .flatMap(rootId -> recurCategoryTreeOptions(rootId, prodCategoryList).stream())
+                .toList();
+    }
+
+    //递归生成表格层级列表
+    public static List<Option<Long>> recurCategoryTreeOptions(long parentId, List<ProdCategory> prodCategoryList) {
+        return CollectionUtil.emptyIfNull(prodCategoryList).stream()
+                .filter(cate -> cate.getParentId().equals(parentId))
+                .map(cate -> {
+                    Option<Long> option = new Option<>(cate.getId(), cate.getCategoryName());
+                    List<Option<Long>> children = recurCategoryTreeOptions(cate.getId(), prodCategoryList);
+                    if (CollectionUtil.isNotEmpty(children)) {
+                        option.setChildren(children);
+                    }
+                    return option;
+                })
+                .collect(Collectors.toList());
     }
 
     //路径生成
