@@ -10,7 +10,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class ProdCategory extends BaseEntity {
-    private Integer parentId;//父菜单ID
+    private Long parentId;//父菜单ID
     private String categoryName;//分类名称
     private String treePath;//父节点ID路径
     private Integer sort;//显示顺序

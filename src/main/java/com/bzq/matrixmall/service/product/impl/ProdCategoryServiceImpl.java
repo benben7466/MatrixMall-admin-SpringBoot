@@ -1,5 +1,6 @@
 package com.bzq.matrixmall.service.product.impl;
 
+import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.lang.Assert;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
@@ -13,9 +14,17 @@ import com.bzq.matrixmall.model.entity.product.ProdCategory;
 import com.bzq.matrixmall.model.entity.system.SysDept;
 import com.bzq.matrixmall.model.form.product.ProdBrandForm;
 import com.bzq.matrixmall.model.form.product.ProdCategoryForm;
+import com.bzq.matrixmall.model.query.product.ProdCategoryQuery;
+import com.bzq.matrixmall.model.vo.product.ProdCategoryVO;
+import com.bzq.matrixmall.model.vo.system.DeptVO;
 import com.bzq.matrixmall.service.product.ProdCategoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -94,6 +103,54 @@ public class ProdCategoryServiceImpl extends ServiceImpl<ProdCategoryMapper, Pro
             }
         }
         return true;
+    }
+
+    //分类列表
+    @Override
+    public List<ProdCategoryVO> getProdCategoryList(ProdCategoryQuery queryParams) {
+        // 查询参数
+        String keywords = queryParams.getKeywords();
+
+        // 查询数据
+        List<ProdCategory> prodCategoryList = this.list(
+                new LambdaQueryWrapper<ProdCategory>()
+                        .like(StrUtil.isNotBlank(keywords), ProdCategory::getCategoryName, keywords)
+                        .orderByAsc(ProdCategory::getSort)
+        );
+
+        if (CollectionUtil.isEmpty(prodCategoryList)) {
+            return Collections.EMPTY_LIST;
+        }
+
+        // 获取所有分类ID
+        Set<Long> prodCategoryIds = prodCategoryList.stream()
+                .map(ProdCategory::getId)
+                .collect(Collectors.toSet());
+
+        // 获取父节点ID
+        Set<Long> parentIds = prodCategoryList.stream()
+                .map(ProdCategory::getParentId)
+                .collect(Collectors.toSet());
+
+        // 获取根节点ID（递归的起点），即父节点ID中不包含在ID中的节点，注意这里不能拿顶级 O 作为根节点，因为筛选的时候 O 会被过滤掉
+        List<Long> rootIds = CollectionUtil.subtractToList(parentIds, prodCategoryIds);
+
+        // 递归生成部门树形列表
+        return rootIds.stream()
+                .flatMap(rootId -> recurCategoryList(rootId, prodCategoryList).stream())
+                .toList();
+    }
+
+    //递归生成树形列表
+    public List<ProdCategoryVO> recurCategoryList(Long parentId, List<ProdCategory> prodCategoryList) {
+        return prodCategoryList.stream()
+                .filter(cate -> cate.getParentId().equals(parentId))
+                .map(cate -> {
+                    ProdCategoryVO prodCategoryVO = prodCategoryConverter.toVo(cate);
+                    List<ProdCategoryVO> children = recurCategoryList(cate.getId(), prodCategoryList);
+                    prodCategoryVO.setChildren(children);
+                    return prodCategoryVO;
+                }).toList();
     }
 
     //路径生成

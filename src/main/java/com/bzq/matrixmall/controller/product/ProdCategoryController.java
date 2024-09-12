@@ -1,8 +1,14 @@
 package com.bzq.matrixmall.controller.product;
 
 import com.bzq.matrixmall.common.result.Result;
+import com.bzq.matrixmall.enums.LogModuleEnum;
 import com.bzq.matrixmall.model.form.product.ProdCategoryForm;
+import com.bzq.matrixmall.model.query.product.ProdCategoryQuery;
+import com.bzq.matrixmall.model.query.system.DeptQuery;
+import com.bzq.matrixmall.model.vo.product.ProdCategoryVO;
+import com.bzq.matrixmall.model.vo.system.DeptVO;
 import com.bzq.matrixmall.plugin.norepeat.annotation.PreventRepeatSubmit;
+import com.bzq.matrixmall.plugin.syslog.annotation.LogAnnotation;
 import com.bzq.matrixmall.service.product.ProdCategoryService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -12,6 +18,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 //用户控制层
 @Tag(name = "102.商品分类接口")
@@ -59,6 +67,16 @@ public class ProdCategoryController {
     ) {
         boolean result = prodCategoryService.deleteProdCategory(ids);
         return Result.judge(result);
+    }
+
+    @Operation(summary = "分类列表")
+    @GetMapping
+    @LogAnnotation( value = "分类列表",module = LogModuleEnum.PROD_CATEGORY)
+    public Result<List<ProdCategoryVO>> getProdCategoryList(
+            ProdCategoryQuery queryParams
+    ) {
+        List<ProdCategoryVO> list = prodCategoryService.getProdCategoryList(queryParams);
+        return Result.success(list);
     }
 
 }
