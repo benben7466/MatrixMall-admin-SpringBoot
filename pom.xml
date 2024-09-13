@@ -39,6 +39,10 @@
         <redisson.version>3.30.0</redisson.version>
         <alibaba-easyexcel.version>3.2.1</alibaba-easyexcel.version>
 
+        <!-- 对象存储 -->
+        <minio.version>8.5.10</minio.version>
+        <aliyun-sdk-oss.version>3.16.3</aliyun-sdk-oss.version>
+
     </properties>
     <dependencies>
         <dependency>
@@ -128,6 +132,19 @@
             <groupId>org.redisson</groupId>
             <artifactId>redisson-spring-boot-starter</artifactId>
             <version>${redisson.version}</version>
+        </dependency>
+
+        <!-- MinIO 对象存储 -->
+        <dependency>
+            <groupId>io.minio</groupId>
+            <artifactId>minio</artifactId>
+            <version>${minio.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.aliyun.oss</groupId>
+            <artifactId>aliyun-sdk-oss</artifactId>
+            <version>${aliyun-sdk-oss.version}</version>
         </dependency>
 
     </dependencies>

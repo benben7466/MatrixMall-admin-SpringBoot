@@ -31,6 +31,7 @@ public enum ResultCode implements IResultCode, Serializable {
     PARAM_ERROR("A0400", "用户请求参数错误"),
     RESOURCE_NOT_FOUND("A0401", "请求资源不存在"),
     PARAM_IS_NULL("A0410", "请求必填参数为空"),
+    UPLOAD_FILE_EXCEED_SIZE_LIMIT("A0412", "上传文件超过系统限制"),
 
     SYSTEM_EXECUTION_ERROR("B0001", "系统执行出错"),
 
