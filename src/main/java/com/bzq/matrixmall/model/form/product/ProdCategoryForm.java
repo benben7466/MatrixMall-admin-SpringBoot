@@ -25,14 +25,13 @@ public class ProdCategoryForm {
     private String categoryName;
 
     @Schema(description="排序")
-    private String sort;
+    private Integer sort;
 
     @Schema(description = "状态（1-启用，0-禁用）", example = "1")
     @Range(min = 0, max = 1, message = "状态不正确")
     private Integer status;
 
     @Schema(description="图标url")
-    @NotBlank(message = "图标url不能为空")
     private String iconUrl;
 
 }
