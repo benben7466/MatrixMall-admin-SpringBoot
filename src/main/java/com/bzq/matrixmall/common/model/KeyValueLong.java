@@ -8,23 +8,15 @@ import lombok.NoArgsConstructor;
 @Schema(description ="键值对")
 @Data
 @NoArgsConstructor
-public class KeyValue {
+public class KeyValueLong {
 
-    public KeyValue(String key, String value) {
+    public KeyValueLong(Long key, String value) {
         this.key = key;
         this.value = value;
     }
 
-    public KeyValue(Long key, String value) {
-        this.keyLong = key;
-        this.value = value;
-    }
-
     @Schema(description="选项的值")
-    private String key;//默认
-
-    @Schema(description="选项的值")
-    private Long keyLong;
+    private Long key;
 
     @Schema(description="选项的标签")
     private String value;

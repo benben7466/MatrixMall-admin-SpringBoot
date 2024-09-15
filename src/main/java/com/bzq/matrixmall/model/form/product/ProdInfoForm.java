@@ -2,12 +2,14 @@ package com.bzq.matrixmall.model.form.product;
 
 //商品信息表单对象
 
+import com.bzq.matrixmall.common.model.KeyValue;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 import org.hibernate.validator.constraints.Range;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Schema(description = "商品信息表单对象")
 @Data
@@ -46,4 +48,7 @@ public class ProdInfoForm {
 
     @Schema(description="更新时间")
     private LocalDateTime updateTime;
+
+    @Schema(description = "分类ID列表")
+    private List<KeyValue> categoryIds;
 }

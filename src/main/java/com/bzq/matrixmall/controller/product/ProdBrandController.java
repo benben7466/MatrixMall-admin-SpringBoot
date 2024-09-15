@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-//用户控制层
+//品牌控制层
 @Tag(name = "103.商品品牌接口")
 @RestController
 @RequestMapping("/api/v1/product/brand")

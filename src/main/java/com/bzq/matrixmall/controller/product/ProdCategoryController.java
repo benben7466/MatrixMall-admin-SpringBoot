@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-//用户控制层
+//分类控制层
 @Tag(name = "102.商品分类接口")
 @RestController
 @RequestMapping("/api/v1/product/category")

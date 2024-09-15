@@ -1,20 +1,26 @@
 package com.bzq.matrixmall.service.product.impl;
 
+import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.convert.Convert;
 import cn.hutool.core.lang.Assert;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.bzq.matrixmall.common.model.KeyValue;
 import com.bzq.matrixmall.converter.product.ProdInfoConverter;
 import com.bzq.matrixmall.mapper.product.ProdInfoMapper;
 import com.bzq.matrixmall.model.bo.system.UserBO;
 import com.bzq.matrixmall.model.entity.product.ProdInfo;
+import com.bzq.matrixmall.model.entity.product.ProdProductCategory;
 import com.bzq.matrixmall.model.entity.system.SysUser;
 import com.bzq.matrixmall.model.form.product.ProdInfoForm;
 import com.bzq.matrixmall.model.query.product.ProdInfoPageQuery;
 import com.bzq.matrixmall.model.vo.product.ProdInfoVO;
 import com.bzq.matrixmall.service.product.ProdInfoService;
+import com.bzq.matrixmall.service.product.ProdProductCategoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -27,6 +33,7 @@ import java.util.stream.Collectors;
 public class ProdInfoServiceImpl extends ServiceImpl<ProdInfoMapper, ProdInfo> implements ProdInfoService {
 
     private final ProdInfoConverter prodInfoConverter;
+    private final ProdProductCategoryService prodProductCategoryService;
 
     //新增商品信息
     @Override
@@ -68,6 +75,21 @@ public class ProdInfoServiceImpl extends ServiceImpl<ProdInfoMapper, ProdInfo> i
         // form -> entity
         ProdInfo entity = prodInfoConverter.toEntity(prodInfoForm);
         entity.setId(prodId);
+
+        //保存分类
+        List<KeyValue> categoryIds = prodInfoForm.getCategoryIds();
+        if (CollectionUtil.isNotEmpty(categoryIds)) {
+            List<Long> saveCategoryIds = categoryIds
+                    .stream()
+                    .filter(item -> StrUtil.isNotBlank(item.getKey()))
+                    .map(item -> Convert.toLong(item.getKey()))
+                    .collect(Collectors.toList());
+
+            prodProductCategoryService.saveProductCategory(prodId, saveCategoryIds);
+        } else {
+            //清空
+            prodProductCategoryService.deleteProductCategory(prodId);
+        }
 
         return this.updateById(entity);
     }

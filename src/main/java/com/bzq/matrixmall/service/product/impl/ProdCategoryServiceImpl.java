@@ -11,22 +11,22 @@ import com.bzq.matrixmall.common.model.Option;
 import com.bzq.matrixmall.converter.product.ProdCategoryConverter;
 import com.bzq.matrixmall.enums.StatusEnum;
 import com.bzq.matrixmall.mapper.product.ProdCategoryMapper;
-import com.bzq.matrixmall.model.entity.product.ProdBrand;
 import com.bzq.matrixmall.model.entity.product.ProdCategory;
-import com.bzq.matrixmall.model.entity.system.SysDept;
-import com.bzq.matrixmall.model.form.product.ProdBrandForm;
 import com.bzq.matrixmall.model.form.product.ProdCategoryForm;
 import com.bzq.matrixmall.model.query.product.ProdCategoryQuery;
 import com.bzq.matrixmall.model.vo.product.ProdCategoryVO;
-import com.bzq.matrixmall.model.vo.system.DeptVO;
+import com.bzq.matrixmall.plugin.norepeat.annotation.PreventRepeatSubmit;
 import com.bzq.matrixmall.service.product.ProdCategoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+//商品与分类
 
 @Service
 @RequiredArgsConstructor
@@ -67,6 +67,8 @@ public class ProdCategoryServiceImpl extends ServiceImpl<ProdCategoryMapper, Pro
 
     //修改分类
     @Override
+    @Transactional
+    @PreventRepeatSubmit
     public Long updateProdCategory(Long categoryId, ProdCategoryForm formData) {
         // 校验分类是否存在
         String categoryName = formData.getCategoryName();

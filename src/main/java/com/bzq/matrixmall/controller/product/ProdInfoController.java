@@ -19,7 +19,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-//用户控制层
+//商品信息控制层
 @Tag(name = "101.商品信息接口")
 @RestController
 @RequestMapping("/api/v1/product/info")

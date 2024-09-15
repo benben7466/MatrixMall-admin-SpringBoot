@@ -2,6 +2,7 @@ package com.bzq.matrixmall.model.form.product;
 
 //分类表单对象
 
+import com.bzq.matrixmall.common.model.KeyValue;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -9,6 +10,7 @@ import lombok.Data;
 import org.hibernate.validator.constraints.Range;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Schema(description = "分类表单对象")
 @Data
@@ -33,5 +35,4 @@ public class ProdCategoryForm {
 
     @Schema(description="图标url")
     private String iconUrl;
-
 }
