@@ -2,10 +2,12 @@ package com.bzq.matrixmall.service.product;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.bzq.matrixmall.common.model.Option;
+import com.bzq.matrixmall.model.bo.product.ProductCategoryBO;
 import com.bzq.matrixmall.model.entity.product.ProdCategory;
 import com.bzq.matrixmall.model.form.product.ProdCategoryForm;
 import com.bzq.matrixmall.model.query.product.ProdCategoryQuery;
 import com.bzq.matrixmall.model.vo.product.ProdCategoryVO;
+import com.bzq.matrixmall.model.vo.product.ProdInfoVO;
 
 import java.util.List;
 
@@ -27,4 +29,7 @@ public interface ProdCategoryService extends IService<ProdCategory> {
 
     //分类下拉列表
     List<Option<Long>> listProdCategoryOptions();
+
+    //通过分类Id集合，取得分类名称
+    List<ProductCategoryBO> getCategoryNameListByProductIds(List<Long> productIds);
 }

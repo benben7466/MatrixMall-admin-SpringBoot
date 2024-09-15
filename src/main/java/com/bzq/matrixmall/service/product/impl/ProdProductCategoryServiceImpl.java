@@ -4,7 +4,6 @@ import cn.hutool.core.collection.CollectionUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.bzq.matrixmall.common.model.KeyValue;
-import com.bzq.matrixmall.common.model.KeyValueLong;
 import com.bzq.matrixmall.converter.product.ProdProductCategoryConverter;
 import com.bzq.matrixmall.mapper.product.ProdProductCategoryMapper;
 import com.bzq.matrixmall.model.entity.product.ProdProductCategory;
@@ -86,5 +85,18 @@ public class ProdProductCategoryServiceImpl extends ServiceImpl<ProdProductCateg
                 .toList();
 
         return transformedList;
+    }
+
+    //通过商品ID集合，取得分类ID集合
+    @Override
+    public List<ProdProductCategory> getProductCategoryByPids(List<Long> productIds) {
+        // 查询数据
+        List<ProdProductCategory> prodCategoryList = this.list(
+                new LambdaQueryWrapper<ProdProductCategory>()
+                        .in(ProdProductCategory::getProductId, productIds)
+                        .orderByAsc(ProdProductCategory::getId)
+        );
+
+        return prodCategoryList;
     }
 }

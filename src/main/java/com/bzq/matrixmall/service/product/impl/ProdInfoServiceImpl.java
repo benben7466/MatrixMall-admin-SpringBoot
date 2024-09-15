@@ -12,15 +12,20 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.bzq.matrixmall.common.model.KeyValue;
 import com.bzq.matrixmall.converter.product.ProdInfoConverter;
 import com.bzq.matrixmall.mapper.product.ProdInfoMapper;
+import com.bzq.matrixmall.model.bo.product.ProductCategoryBO;
 import com.bzq.matrixmall.model.bo.system.UserBO;
+import com.bzq.matrixmall.model.entity.product.ProdCategory;
 import com.bzq.matrixmall.model.entity.product.ProdInfo;
 import com.bzq.matrixmall.model.entity.product.ProdProductCategory;
 import com.bzq.matrixmall.model.entity.system.SysUser;
 import com.bzq.matrixmall.model.form.product.ProdInfoForm;
 import com.bzq.matrixmall.model.query.product.ProdInfoPageQuery;
+import com.bzq.matrixmall.model.vo.product.ProdCategoryVO;
 import com.bzq.matrixmall.model.vo.product.ProdInfoVO;
+import com.bzq.matrixmall.service.product.ProdCategoryService;
 import com.bzq.matrixmall.service.product.ProdInfoService;
 import com.bzq.matrixmall.service.product.ProdProductCategoryService;
+import com.bzq.matrixmall.service.product.ProdProductImageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -34,6 +39,8 @@ public class ProdInfoServiceImpl extends ServiceImpl<ProdInfoMapper, ProdInfo> i
 
     private final ProdInfoConverter prodInfoConverter;
     private final ProdProductCategoryService prodProductCategoryService;
+    private final ProdCategoryService prodCategoryService;
+    private final ProdProductImageService prodProductImageService;
 
     //新增商品信息
     @Override
@@ -48,6 +55,24 @@ public class ProdInfoServiceImpl extends ServiceImpl<ProdInfoMapper, ProdInfo> i
 
         boolean result = this.save(entity);
         Assert.isTrue(result, "商品信息保存失败");
+
+        //保存分类
+        List<KeyValue> categoryIds = prodInfoForm.getCategoryIds();
+        if (CollectionUtil.isNotEmpty(categoryIds)) {
+            List<Long> saveCategoryIds = categoryIds
+                    .stream()
+                    .filter(item -> item.getKeyLong() > 0)
+                    .map(item -> item.getKeyLong())
+                    .collect(Collectors.toList());
+
+            prodProductCategoryService.saveProductCategory(entity.getId(), saveCategoryIds);
+        }
+
+        //保存图片
+        List<String> picUrls = prodInfoForm.getPicUrls();
+        if (CollectionUtil.isNotEmpty(picUrls)) {
+            prodProductImageService.saveProductImage(entity.getId(), picUrls);
+        }
 
         return result;
     }
@@ -81,14 +106,20 @@ public class ProdInfoServiceImpl extends ServiceImpl<ProdInfoMapper, ProdInfo> i
         if (CollectionUtil.isNotEmpty(categoryIds)) {
             List<Long> saveCategoryIds = categoryIds
                     .stream()
-                    .filter(item -> StrUtil.isNotBlank(item.getKey()))
-                    .map(item -> Convert.toLong(item.getKey()))
+                    .filter(item -> item.getKeyLong() > 0)
+                    .map(item -> item.getKeyLong())
                     .collect(Collectors.toList());
 
             prodProductCategoryService.saveProductCategory(prodId, saveCategoryIds);
         } else {
             //清空
             prodProductCategoryService.deleteProductCategory(prodId);
+        }
+
+        //保存图片
+        List<String> picUrls = prodInfoForm.getPicUrls();
+        if (CollectionUtil.isNotEmpty(picUrls)) {
+            prodProductImageService.saveProductImage(prodId, picUrls);
         }
 
         return this.updateById(entity);
@@ -114,6 +145,26 @@ public class ProdInfoServiceImpl extends ServiceImpl<ProdInfoMapper, ProdInfo> i
         int pageSize = queryParams.getPageSize();
 
         // 查询数据
-        return this.baseMapper.listPageProdInfo(new Page<>(pageNum, pageSize), queryParams);
+        IPage<ProdInfoVO> prodInfoVOList = this.baseMapper.listPageProdInfo(new Page<>(pageNum, pageSize), queryParams);
+
+        //附加分类信息
+        ////取得商品ID集合
+        List<Long> productIds = prodInfoVOList.getRecords().stream()
+                .map(ProdInfoVO::getId)
+                .collect(Collectors.toList());
+        ////通过分类Id集合，取得分类名称
+        List<ProductCategoryBO> categoryNameList = prodCategoryService.getCategoryNameListByProductIds(productIds);
+        ////分类信息绑定回对象中
+        prodInfoVOList.getRecords().stream().forEach(prodInfoVO -> {
+            prodInfoVO.setCategoryNameList(categoryNameList.stream()
+                    .filter(item -> item.getProductId().equals(prodInfoVO.getId()))
+                    .map(ProductCategoryBO::getCategoryNameTree)
+                    .collect(Collectors.toList())
+            );
+        });
+
+        return prodInfoVOList;
     }
+
+
 }

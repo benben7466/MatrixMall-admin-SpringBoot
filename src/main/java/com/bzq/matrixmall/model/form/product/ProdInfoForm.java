@@ -51,4 +51,7 @@ public class ProdInfoForm {
 
     @Schema(description = "分类ID列表")
     private List<KeyValue> categoryIds;
+
+    @Schema(description = "商品图片列表")
+    private List<String> picUrls;
 }

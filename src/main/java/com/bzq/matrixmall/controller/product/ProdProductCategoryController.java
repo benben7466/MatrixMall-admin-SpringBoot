@@ -1,7 +1,6 @@
 package com.bzq.matrixmall.controller.product;
 
 import com.bzq.matrixmall.common.model.KeyValue;
-import com.bzq.matrixmall.common.model.KeyValueLong;
 import com.bzq.matrixmall.common.result.Result;
 import com.bzq.matrixmall.service.product.ProdProductCategoryService;
 import io.swagger.v3.oas.annotations.Operation;

@@ -11,10 +11,13 @@ import com.bzq.matrixmall.common.model.Option;
 import com.bzq.matrixmall.converter.product.ProdCategoryConverter;
 import com.bzq.matrixmall.enums.StatusEnum;
 import com.bzq.matrixmall.mapper.product.ProdCategoryMapper;
+import com.bzq.matrixmall.model.bo.product.ProductCategoryBO;
+import com.bzq.matrixmall.model.dto.system.UserAuthInfo;
 import com.bzq.matrixmall.model.entity.product.ProdCategory;
 import com.bzq.matrixmall.model.form.product.ProdCategoryForm;
 import com.bzq.matrixmall.model.query.product.ProdCategoryQuery;
 import com.bzq.matrixmall.model.vo.product.ProdCategoryVO;
+import com.bzq.matrixmall.model.vo.product.ProdInfoVO;
 import com.bzq.matrixmall.plugin.norepeat.annotation.PreventRepeatSubmit;
 import com.bzq.matrixmall.service.product.ProdCategoryService;
 import lombok.RequiredArgsConstructor;
@@ -183,6 +186,13 @@ public class ProdCategoryServiceImpl extends ServiceImpl<ProdCategoryMapper, Pro
         return rootIds.stream()
                 .flatMap(rootId -> recurCategoryTreeOptions(rootId, prodCategoryList).stream())
                 .toList();
+    }
+
+    //通过三级分类ID，取得分类名称（含1，2，3级）
+    @Override
+    public List<ProductCategoryBO> getCategoryNameListByProductIds(List<Long> productIds) {
+        List<ProductCategoryBO> prodCategory = this.baseMapper.getCategoryNameListByProductIds(productIds);
+        return prodCategory;
     }
 
     //递归生成表格层级列表
